@@ -1,0 +1,104 @@
+﻿"""Master CLI Entrypoint for ML-Project-01."""
+
+import argparse
+import sys
+import uvicorn
+from data_loader import DataLoader
+from preprocessor import DataPreprocessor
+from feature_engineer import FeatureEngineer
+from eda_analyzer import EDAAnalyzer
+from model_trainer import ModelTrainer
+from evaluator import ModelEvaluator
+from hyperparameter_tuner import HyperparameterTuner
+from visualizer import MLVisualizer
+from model_serializer import ModelSerializer
+from config import config, paths
+from logger import logger
+
+
+def run_pipeline():
+    """Executes the full machine learning training & evaluation pipeline."""
+    logger.info("=== Starting End-to-End ML Pipeline ===")
+
+    # 1. Generate / Load Data
+    df = DataLoader.generate_synthetic_dataset()
+    EDAAnalyzer.generate_summary(df)
+
+    # 2. Split Data
+    X_train, X_val, X_test, y_train, y_val, y_test = DataLoader.split_dataset(df)
+
+    # 3. Preprocessing (Imputation & Outlier Clipping)
+    preprocessor = DataPreprocessor()
+    X_train_clean = preprocessor.fit_transform(X_train)
+    X_val_clean = preprocessor.transform(X_val)
+    X_test_clean = preprocessor.transform(X_test)
+    ModelSerializer.save_artifact(preprocessor, "preprocessor.joblib")
+
+    # 4. Feature Engineering (Scaling & Encoders)
+    feature_engineer = FeatureEngineer(scaling_method="standard")
+    X_train_eng = feature_engineer.fit_transform(X_train_clean)
+    X_val_eng = feature_engineer.transform(X_val_clean)
+    X_test_eng = feature_engineer.transform(X_test_clean)
+    ModelSerializer.save_artifact(feature_engineer, "feature_engineer.joblib")
+
+    # 5. Visualizer
+    viz = MLVisualizer()
+    corr = EDAAnalyzer.compute_correlation_matrix(X_train_eng)
+    viz.plot_correlation_heatmap(corr)
+
+    # 6. Train Models
+    trainer = ModelTrainer()
+    trained_models = trainer.train_all(X_train_eng, y_train)
+
+    # 7. Evaluate Models
+    eval_results = {}
+    best_model_name = None
+    best_r2 = -float("inf")
+
+    for name, model in trained_models.items():
+        y_pred = model.predict(X_val_eng)
+        metrics = ModelEvaluator.evaluate_model(y_val, y_pred, model_name=name)
+        eval_results[name] = metrics
+
+        if metrics["r2_score"] > best_r2:
+            best_r2 = metrics["r2_score"]
+            best_model_name = name
+
+    leaderboard = ModelEvaluator.compare_models(eval_results)
+    logger.info(f"\nModel Leaderboard:\n{leaderboard}")
+
+    # 8. Save Best Model
+    best_model = trainer.get_model(best_model_name)
+    ModelSerializer.save_artifact(
+        best_model,
+        "best_model.joblib",
+        metadata={"algorithm": best_model_name, "best_r2_val": best_r2},
+    )
+
+    # 9. Test set prediction visualization
+    y_test_pred = best_model.predict(X_test_eng)
+    viz.plot_predictions_vs_actual(y_test.values, y_test_pred)
+
+    logger.info("=== Pipeline Completed Successfully ===")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="ML-Project-01 CLI")
+    parser.add_argument(
+        "--mode",
+        choices=["train", "serve"],
+        default="train",
+        help="Execute training pipeline or launch REST API server",
+    )
+    parser.add_argument("--port", type=int, default=8000, help="Port for FastAPI server")
+    args = parser.parse_args()
+
+    if args.mode == "train":
+        run_pipeline()
+    elif args.mode == "serve":
+        logger.info(f"Starting FastAPI server on http://0.0.0.0:{args.port}")
+        uvicorn.run("api:app", host="0.0.0.0", port=args.port, reload=True)
+
+
+if __name__ == "__main__":
+    main()
