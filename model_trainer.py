@@ -2,8 +2,8 @@
 
 import time
 import pandas as pd
-from typing import Dict, Any
-from sklearn.linear_model import LinearRegression, Ridge
+from typing import Dict, Any, Optional
+from sklearn.linear_model import LinearRegression, Ridge, ElasticNet, HuberRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from config import config
 from logger import logger
@@ -17,6 +17,8 @@ class ModelTrainer:
         self.models: Dict[str, Any] = {
             "linear_regression": LinearRegression(),
             "ridge": Ridge(alpha=1.0, random_state=random_state),
+            "elastic_net": ElasticNet(alpha=0.1, l1_ratio=0.5, random_state=random_state),
+            "huber": HuberRegressor(),
             "random_forest": RandomForestRegressor(n_estimators=100, random_state=random_state),
             "gradient_boosting": GradientBoostingRegressor(n_estimators=100, random_state=random_state),
         }
