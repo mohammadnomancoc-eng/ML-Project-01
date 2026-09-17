@@ -1,6 +1,7 @@
 ﻿"""Master CLI Entrypoint for ML-Project-01."""
 
 import argparse
+import time
 import sys
 import uvicorn
 from data_loader import DataLoader
@@ -18,6 +19,7 @@ from logger import logger
 
 def run_pipeline():
     """Executes the full machine learning training & evaluation pipeline."""
+    start_total = time.time()
     logger.info("=== Starting End-to-End ML Pipeline ===")
 
     # 1. Generate / Load Data
@@ -57,7 +59,7 @@ def run_pipeline():
 
     for name, model in trained_models.items():
         y_pred = model.predict(X_val_eng)
-        metrics = ModelEvaluator.evaluate_model(y_val, y_pred, model_name=name)
+        metrics = ModelEvaluator.evaluate_model(y_val, y_pred, model_name=name, n_features=X_val_eng.shape[1])
         eval_results[name] = metrics
 
         if metrics["r2_score"] > best_r2:
@@ -75,11 +77,13 @@ def run_pipeline():
         metadata={"algorithm": best_model_name, "best_r2_val": best_r2},
     )
 
-    # 9. Test set prediction visualization
+    # 9. Test set prediction visualization & residual analysis
     y_test_pred = best_model.predict(X_test_eng)
     viz.plot_predictions_vs_actual(y_test.values, y_test_pred)
+    viz.plot_residual_distribution(y_test.values, y_test_pred)
 
-    logger.info("=== Pipeline Completed Successfully ===")
+    elapsed_total = round(time.time() - start_total, 2)
+    logger.info(f"=== Pipeline Completed Successfully in {elapsed_total}s ===")
 
 
 def main():
