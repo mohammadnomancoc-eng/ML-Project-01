@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from typing import Tuple
+from typing import Tuple, Generator, Optional
 from sklearn.datasets import make_regression
 from sklearn.model_selection import train_test_split
 from config import config, paths
@@ -51,6 +51,13 @@ class DataLoader:
         return pd.read_csv(file_path)
 
     @staticmethod
+    def stream_csv_chunks(file_path: str, chunksize: int = 500) -> Generator[pd.DataFrame, None, None]:
+        """Streams large CSV files in manageable chunks."""
+        logger.info(f"Streaming CSV from {file_path} in chunks of {chunksize}...")
+        for chunk in pd.read_csv(file_path, chunksize=chunksize):
+            yield chunk
+
+    @staticmethod
     def split_dataset(
         df: pd.DataFrame,
         target_col: str = config.TARGET_COLUMN,
@@ -61,12 +68,10 @@ class DataLoader:
         X = df.drop(columns=[target_col])
         y = df[target_col]
 
-        # First split: train+val vs test
         X_train_val, X_test, y_train_val, y_test = train_test_split(
             X, y, test_size=test_size, random_state=config.RANDOM_STATE
         )
 
-        # Second split: train vs val
         adjusted_val_size = val_size / (1.0 - test_size)
         X_train, X_val, y_train, y_val = train_test_split(
             X_train_val, y_train_val, test_size=adjusted_val_size, random_state=config.RANDOM_STATE
