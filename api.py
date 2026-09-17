@@ -1,5 +1,7 @@
 ﻿"""FastAPI REST Service for Model Deployment and Inference."""
 
+import time
+import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from validator import SinglePredictionRequest, BatchPredictionRequest, PredictionResponse
@@ -9,7 +11,7 @@ from logger import logger
 app = FastAPI(
     title="ML-Project-01 REST API",
     description="High-performance machine learning inference microservice.",
-    version="1.0.0",
+    version="1.1.0",
 )
 
 # Enable CORS
@@ -37,7 +39,7 @@ def load_model_on_startup():
 
 @app.get("/", tags=["Health"])
 def root():
-    return {"message": "ML-Project-01 API is running", "status": "online"}
+    return {"message": "ML-Project-01 API is running", "status": "online", "version": "1.1.0"}
 
 
 @app.get("/health", tags=["Health"])
@@ -58,4 +60,19 @@ def predict_single(payload: SinglePredictionRequest):
         return PredictionResponse(prediction=val, status="success")
     except Exception as e:
         logger.error(f"Inference error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/predict/batch", response_model=PredictionResponse, tags=["Inference"])
+def predict_batch(payload: BatchPredictionRequest):
+    if predictor is None:
+        raise HTTPException(status_code=503, detail="Model predictor is not initialized.")
+
+    try:
+        instances = [inst.model_dump() for inst in payload.instances]
+        df = pd.DataFrame(instances)
+        preds = predictor.predict_batch(df).tolist()
+        return PredictionResponse(predictions=preds, status="success")
+    except Exception as e:
+        logger.error(f"Batch inference error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
