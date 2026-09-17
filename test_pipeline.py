@@ -8,6 +8,7 @@ from preprocessor import DataPreprocessor
 from feature_engineer import FeatureEngineer
 from model_trainer import ModelTrainer
 from evaluator import ModelEvaluator
+from model_serializer import ModelSerializer
 
 
 def test_data_loader_synthetic():
@@ -42,6 +43,17 @@ def test_model_training_and_eval():
     assert "ridge" in trained_models
 
     preds = trained_models["ridge"].predict(X)
-    metrics = ModelEvaluator.evaluate_model(y, preds, "ridge")
+    metrics = ModelEvaluator.evaluate_model(y, preds, "ridge", n_features=4)
     assert "r2_score" in metrics
+    assert "adjusted_r2" in metrics
     assert "rmse" in metrics
+
+
+def test_artifact_serialization(tmp_path):
+    """Verify model saving and loading consistency."""
+    dummy_obj = {"key": "test_value", "weights": [1.0, 2.0, 3.0]}
+    saved_path = ModelSerializer.save_artifact(dummy_obj, "test_artifact.joblib")
+    loaded_obj = ModelSerializer.load_artifact("test_artifact.joblib")
+
+    assert loaded_obj["key"] == "test_value"
+    assert loaded_obj["weights"] == [1.0, 2.0, 3.0]
