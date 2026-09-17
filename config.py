@@ -21,13 +21,13 @@ class PathConfig:
 
 @dataclass
 class ModelConfig:
-    RANDOM_STATE: int = 42
-    TEST_SIZE: float = 0.2
-    VAL_SIZE: float = 0.1
-    N_SAMPLES: int = 2500
-    N_FEATURES: int = 8
-    TARGET_COLUMN: str = "target"
-    SCALING_METHOD: str = "standard"  # 'standard', 'minmax', 'robust'
+    RANDOM_STATE: int = int(os.getenv("ML_RANDOM_STATE", "42"))
+    TEST_SIZE: float = float(os.getenv("ML_TEST_SIZE", "0.2"))
+    VAL_SIZE: float = float(os.getenv("ML_VAL_SIZE", "0.1"))
+    N_SAMPLES: int = int(os.getenv("ML_N_SAMPLES", "2500"))
+    N_FEATURES: int = int(os.getenv("ML_N_FEATURES", "8"))
+    TARGET_COLUMN: str = os.getenv("ML_TARGET_COL", "target")
+    SCALING_METHOD: str = os.getenv("ML_SCALING_METHOD", "standard")  # 'standard', 'minmax', 'robust'
 
     ALGORITHMS: List[str] = field(
         default_factory=lambda: [
@@ -40,7 +40,7 @@ class ModelConfig:
 
     PARAM_GRIDS: Dict[str, Dict[str, List[Any]]] = field(
         default_factory=lambda: {
-            "ridge": {"alpha": [0.01, 0.1, 1.0, 10.0, 100.0]},
+            "ridge": {"alpha": [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]},
             "random_forest": {
                 "n_estimators": [50, 100, 200],
                 "max_depth": [5, 10, 15, None],
