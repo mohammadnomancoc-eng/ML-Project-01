@@ -48,3 +48,23 @@ class MLVisualizer:
         plt.close()
         logger.info(f"Saved prediction scatter plot to: {output_path}")
         return output_path
+
+    def plot_residual_distribution(
+        self, y_true: np.ndarray, y_pred: np.ndarray, filename: str = "residual_distribution.png"
+    ) -> Path:
+        """Plots residual distribution histogram with KDE overlay."""
+        residuals = y_true - y_pred
+        plt.figure(figsize=(8, 5))
+        sns.histplot(residuals, kde=True, color="#3E71C0", bins=30)
+        plt.axvline(0, color="red", linestyle="--", lw=1.5, label="Zero Error")
+        plt.xlabel("Residual Error (Actual - Predicted)", fontsize=11)
+        plt.ylabel("Count", fontsize=11)
+        plt.title("Residual Error Distribution & Normality", fontsize=13)
+        plt.legend()
+        plt.tight_layout()
+
+        output_path = paths.OUTPUT_DIR / filename
+        plt.savefig(output_path, dpi=300)
+        plt.close()
+        logger.info(f"Saved residual distribution plot to: {output_path}")
+        return output_path
