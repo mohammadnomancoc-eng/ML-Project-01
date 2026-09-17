@@ -8,27 +8,37 @@ from logger import logger
 
 
 class DataPreprocessor(BaseEstimator, TransformerMixin):
-    """Handles missing values, outlier clipping, and data sanitation."""
+    """Handles missing values, infinite values, outlier clipping, and data sanitation."""
 
-    def __init__(self, iqr_multiplier: float = 1.5):
+    def __init__(self, iqr_multiplier: float = 1.5, drop_constants: bool = True):
         self.iqr_multiplier = iqr_multiplier
+        self.drop_constants = drop_constants
         self.numeric_medians_: dict = {}
         self.categorical_modes_: dict = {}
         self.iqr_bounds_: dict = {}
+        self.constant_columns_: List[str] = []
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
         """Learns imputation statistics and IQR bounds from training data."""
         logger.info("Fitting DataPreprocessor on training set...")
         X = X.copy()
 
+        # Detect constant columns
+        if self.drop_constants:
+            self.constant_columns_ = [col for col in X.columns if X[col].nunique() <= 1]
+            if self.constant_columns_:
+                logger.info(f"Identified {len(self.constant_columns_)} constant columns to drop: {self.constant_columns_}")
+            X = X.drop(columns=self.constant_columns_)
+
         numeric_cols = X.select_dtypes(include=[np.number]).columns
         categorical_cols = X.select_dtypes(exclude=[np.number]).columns
 
         # Numeric medians & IQR
         for col in numeric_cols:
-            self.numeric_medians_[col] = X[col].median()
-            q1 = X[col].quantile(0.25)
-            q3 = X[col].quantile(0.75)
+            series = X[col].replace([np.inf, -np.inf], np.nan)
+            self.numeric_medians_[col] = series.median()
+            q1 = series.quantile(0.25)
+            q3 = series.quantile(0.75)
             iqr = q3 - q1
             self.iqr_bounds_[col] = (
                 q1 - self.iqr_multiplier * iqr,
@@ -43,13 +53,17 @@ class DataPreprocessor(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-        """Applies imputation and outlier clipping."""
+        """Applies imputation, infinity sanitization, and outlier clipping."""
         X = X.copy()
+
+        # Drop constant columns learned during fit
+        if self.constant_columns_:
+            X = X.drop(columns=[c for c in self.constant_columns_ if c in X.columns])
 
         # Numeric Imputation and Outlier Clipping
         for col, median_val in self.numeric_medians_.items():
             if col in X.columns:
-                X[col] = X[col].fillna(median_val)
+                X[col] = X[col].replace([np.inf, -np.inf], np.nan).fillna(median_val)
                 lower_bound, upper_bound = self.iqr_bounds_[col]
                 X[col] = np.clip(X[col], lower_bound, upper_bound)
 
