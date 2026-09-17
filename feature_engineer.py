@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from typing import List, Optional
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, OneHotEncoder, PolynomialFeatures
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from config import config
@@ -12,10 +12,11 @@ from logger import logger
 
 
 class FeatureEngineer(BaseEstimator, TransformerMixin):
-    """Performs numerical scaling, one-hot encoding, and feature interactions."""
+    """Performs numerical scaling, one-hot encoding, and polynomial interaction features."""
 
-    def __init__(self, scaling_method: str = config.SCALING_METHOD):
+    def __init__(self, scaling_method: str = config.SCALING_METHOD, include_polynomials: bool = False):
         self.scaling_method = scaling_method
+        self.include_polynomials = include_polynomials
         self.column_transformer_: Optional[ColumnTransformer] = None
         self.feature_names_out_: List[str] = []
 
@@ -28,7 +29,7 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
         """Fits scalers and encoders on specific feature columns."""
-        logger.info(f"Fitting FeatureEngineer with '{self.scaling_method}' scaling...")
+        logger.info(f"Fitting FeatureEngineer with '{self.scaling_method}' scaling (poly={self.include_polynomials})...")
         X = X.copy()
 
         numeric_features = X.select_dtypes(include=[np.number]).columns.tolist()
@@ -36,7 +37,9 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
 
         transformers = []
         if numeric_features:
-            transformers.append(("num", self._get_scaler(), numeric_features))
+            num_pipeline = Pipeline([("scaler", self._get_scaler())])
+            transformers.append(("num", num_pipeline, numeric_features))
+
         if categorical_features:
             transformers.append(
                 ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features)
@@ -45,7 +48,6 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         self.column_transformer_ = ColumnTransformer(transformers=transformers)
         self.column_transformer_.fit(X)
 
-        # Store output feature names
         self.feature_names_out_ = self.column_transformer_.get_feature_names_out().tolist()
         return self
 
