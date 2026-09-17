@@ -1,8 +1,9 @@
 ﻿"""Inference and Prediction Pipeline Module."""
 
+import time
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Tuple
 from model_serializer import ModelSerializer
 from logger import logger
 
@@ -33,3 +34,10 @@ class ModelPredictor:
         df = pd.DataFrame([sample_dict])
         preds = self.predict_batch(df)
         return float(preds[0])
+
+    def predict_with_timing(self, sample_dict: Dict[str, Any]) -> Tuple[float, float]:
+        """Returns prediction along with latency in milliseconds."""
+        start = time.perf_counter()
+        pred = self.predict_single(sample_dict)
+        latency_ms = round((time.perf_counter() - start) * 1000, 3)
+        return pred, latency_ms
