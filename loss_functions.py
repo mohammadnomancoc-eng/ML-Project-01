@@ -1,4 +1,4 @@
-﻿"""Custom Regression Loss Functions and Evaluation Metrics."""
+"""Custom Regression Loss Functions and Evaluation Metrics."""
 
 import numpy as np
 
@@ -28,3 +28,19 @@ def mape_loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """Computes Mean Absolute Percentage Error (MAPE)."""
     mask = y_true != 0
     return float(np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100)
+
+
+def smape_loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Computes Symmetric Mean Absolute Percentage Error (SMAPE)."""
+    denominator = (np.abs(y_true) + np.abs(y_pred)) / 2.0
+    mask = denominator != 0
+    return float(np.mean(np.abs(y_pred[mask] - y_true[mask]) / denominator[mask]) * 100)
+
+
+def wape_loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Computes Weighted Absolute Percentage Error (WAPE)."""
+    total_actual = np.sum(np.abs(y_true))
+    if total_actual == 0:
+        return 0.0
+    return float((np.sum(np.abs(y_true - y_pred)) / total_actual) * 100)
+
