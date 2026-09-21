@@ -1,4 +1,4 @@
-﻿"""System Resource Monitoring and Training Node Telemetry."""
+"""System Resource Monitoring and Training Node Telemetry."""
 
 import os
 import platform
@@ -28,3 +28,24 @@ class SystemHealthMonitor:
             f"System Snapshot: {system_info['os']} {system_info['os_release']} | {cpu_count} CPU cores | Python {system_info['python_version']}"
         )
         return system_info
+
+    @staticmethod
+    def check_disk_space(path: str = ".") -> Dict[str, Any]:
+        """Checks available disk storage in GB and percentage free."""
+        import shutil
+
+        total, used, free = shutil.disk_usage(path)
+        return {
+            "total_gb": round(total / (2**30), 2),
+            "used_gb": round(used / (2**30), 2),
+            "free_gb": round(free / (2**30), 2),
+            "percent_free": round((free / total) * 100, 2),
+            "healthy": (free / total) > 0.05,
+        }
+
+    @staticmethod
+    def is_healthy(min_free_disk_percent: float = 5.0) -> bool:
+        """Determines if host system meets minimum runtime thresholds."""
+        disk = SystemHealthMonitor.check_disk_space()
+        return disk["percent_free"] >= min_free_disk_percent
+
