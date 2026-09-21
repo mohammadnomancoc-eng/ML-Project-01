@@ -1,4 +1,4 @@
-﻿# ML-Project-01 — API Reference 📚
+# ML-Project-01 — API Reference 📚
 
 Complete technical documentation for the machine learning modules, core classes, and REST serving endpoints.
 
@@ -56,7 +56,18 @@ Performs real-time single-sample regression inference.
 | `data_drift_detector.py` | `DataDriftDetector` | Kolmogorov-Smirnov & PSI statistical drift checks |
 | `model_trainer.py` | `ModelTrainer` | Multi-algorithm estimator fitting & time tracking |
 | `evaluator.py` | `ModelEvaluator` | RMSE, MAE, R², and leaderboard ranking |
+| `loss_functions.py` | `huber_loss`, `wape_loss` | Robust and percentage-based regression loss functions |
+| `learning_rate_scheduler.py` | `LRScheduler` | Step decay, exponential, and SGDR warm restart schedulers |
+| `early_stopping.py` | `EarlyStopping` | Loss plateau detector with warmup epochs and relative tolerance |
+| `data_cleaner.py` | `DataCleaner` | String normalization, constant dropping & category imputation |
+| `validator.py` | `DataFrameValidator` | Pydantic API schemas and DataFrame bounds validator |
+| `system_health.py` | `SystemHealthMonitor` | Hardware telemetry, disk space and memory monitoring |
+| `metric_tracker.py` | `MetricTracker` | Real-time moving averages and Markdown summary tables |
+| `cost_analyzer.py` | `BusinessCostAnalyzer` | Asymmetric business loss and cloud hosting cost estimator |
+| `model_card.py` | `ModelCardGenerator` | Automated Markdown model cards and JSON metadata manifests |
+| `synthetic_generator.py` | `SyntheticAugmenter` | Gaussian jitter, interpolation & synthetic outlier injection |
 | `inference.py` | `ModelPredictor` | Real-time & batch prediction pipeline |
 | `batch_processor.py` | `BatchProcessor` | Streamed chunked CSV batch inference |
 | `alert_notifier.py` | `AlertNotifier` | Webhook alert dispatcher |
 | `database_connector.py` | `DatabaseConnector` | SQLite & SQL database connector |
+
