@@ -1,4 +1,4 @@
-﻿"""Data Augmentation and Synthetic Sample Generator."""
+"""Data Augmentation and Synthetic Sample Generator."""
 
 import numpy as np
 import pandas as pd
@@ -46,3 +46,22 @@ class SyntheticAugmenter:
         synth_df = pd.DataFrame(synth_mat, columns=numeric_df.columns)
         logger.info(f"Generated {n_samples} interpolated synthetic samples.")
         return pd.concat([df, synth_df], ignore_index=True)
+
+    def inject_extreme_outliers(
+        self, df: pd.DataFrame, target_columns: Optional[list] = None, ratio: float = 0.02, multiplier: float = 5.0
+    ) -> pd.DataFrame:
+        """Injects extreme statistical anomalies into dataset to stress test robust estimators."""
+        perturbed = df.copy()
+        numeric_cols = target_columns or list(perturbed.select_dtypes(include=[np.number]).columns)
+        n_outliers = max(1, int(len(perturbed) * ratio))
+
+        for col in numeric_cols:
+            if col in perturbed.columns:
+                outlier_indices = self.rng.choice(len(perturbed), size=n_outliers, replace=False)
+                std_val = perturbed[col].std() or 1.0
+                signs = self.rng.choice([-1, 1], size=n_outliers)
+                perturbed.loc[outlier_indices, col] += signs * multiplier * std_val
+
+        logger.info(f"Injected {n_outliers} synthetic outlier values across {len(numeric_cols)} features.")
+        return perturbed
+
