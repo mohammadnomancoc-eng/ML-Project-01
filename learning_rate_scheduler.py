@@ -1,4 +1,4 @@
-﻿"""Learning Rate Schedulers for Optimization Algorithms."""
+"""Learning Rate Schedulers for Optimization Algorithms."""
 
 import math
 from typing import List
@@ -21,3 +21,34 @@ class LRScheduler:
     def cosine_annealing(initial_lr: float, epoch: int, total_epochs: int, min_lr: float = 1e-6) -> float:
         """Cosine annealing: follows a cosine curve down to min_lr."""
         return min_lr + 0.5 * (initial_lr - min_lr) * (1 + math.cos(math.pi * epoch / total_epochs))
+
+    @staticmethod
+    def cosine_annealing_warm_restarts(
+        initial_lr: float, epoch: int, t_0: int = 10, t_mult: int = 2, min_lr: float = 1e-6
+    ) -> float:
+        """Cosine annealing with stochastic warm restarts (SGDR)."""
+        t_curr = epoch
+        t_i = t_0
+        while t_curr >= t_i:
+            t_curr -= t_i
+            t_i *= t_mult
+        return min_lr + 0.5 * (initial_lr - min_lr) * (1 + math.cos(math.pi * t_curr / t_i))
+
+    @classmethod
+    def generate_schedule(cls, scheduler_type: str, initial_lr: float, total_epochs: int, **kwargs) -> List[float]:
+        """Generate full learning rate trajectory list for the entire training cycle."""
+        schedule = []
+        for epoch in range(total_epochs):
+            if scheduler_type == "step":
+                lr = cls.step_decay(initial_lr, epoch, **kwargs)
+            elif scheduler_type == "exponential":
+                lr = cls.exponential_decay(initial_lr, epoch, **kwargs)
+            elif scheduler_type == "cosine":
+                lr = cls.cosine_annealing(initial_lr, epoch, total_epochs, **kwargs)
+            elif scheduler_type == "warm_restart":
+                lr = cls.cosine_annealing_warm_restarts(initial_lr, epoch, **kwargs)
+            else:
+                lr = initial_lr
+            schedule.append(lr)
+        return schedule
+
