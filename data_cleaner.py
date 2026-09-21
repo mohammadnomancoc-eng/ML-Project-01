@@ -1,4 +1,4 @@
-﻿"""Automated Text & Raw Data Cleaning Utilities."""
+"""Automated Text & Raw Data Cleaning Utilities."""
 
 import re
 import pandas as pd
@@ -40,3 +40,22 @@ class DataCleaner:
 
         logger.info(f"Sanitized dataframe with {len(cleaned.columns)} columns.")
         return cleaned
+
+    @staticmethod
+    def drop_constant_columns(df: pd.DataFrame) -> pd.DataFrame:
+        """Removes columns with zero variance or all identical values."""
+        constant_cols = [col for col in df.columns if df[col].nunique(dropna=False) <= 1]
+        if constant_cols:
+            logger.info(f"Dropping {len(constant_cols)} constant columns: {constant_cols}")
+            return df.drop(columns=constant_cols)
+        return df
+
+    @staticmethod
+    def impute_missing_categories(df: pd.DataFrame, fill_value: str = "Unknown") -> pd.DataFrame:
+        """Fills null values in string/categorical columns with a default token."""
+        df_imputed = df.copy()
+        cat_cols = df_imputed.select_dtypes(include=["object", "category"]).columns
+        for col in cat_cols:
+            df_imputed[col] = df_imputed[col].fillna(fill_value)
+        return df_imputed
+
