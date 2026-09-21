@@ -1,4 +1,4 @@
-﻿"""Real-time Training Metric Accumulator & Moving Averages."""
+"""Real-time Training Metric Accumulator & Moving Averages."""
 
 from collections import defaultdict
 from typing import Dict, List, Any
@@ -37,3 +37,15 @@ class MetricTracker:
                 "max": round(float(np.max(arr)), 4),
             }
         return summary
+
+    def export_markdown_table(self) -> str:
+        """Formats the metric summary into a GitHub-flavored Markdown table."""
+        summary = self.get_summary()
+        headers = ["Metric", "Latest", "EMA", "Mean", "Min", "Max"]
+        lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
+        for metric, stats in summary.items():
+            lines.append(
+                f"| {metric} | {stats['latest']} | {stats['ema']} | {stats['mean']} | {stats['min']} | {stats['max']} |"
+            )
+        return "\n".join(lines)
+
