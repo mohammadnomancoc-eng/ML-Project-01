@@ -1,4 +1,4 @@
-﻿"""Centralized Configuration for ML-Project-01."""
+"""Centralized Configuration for ML-Project-01."""
 
 import os
 from dataclasses import dataclass, field
@@ -54,6 +54,26 @@ class ModelConfig:
         }
     )
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert configuration to dictionary."""
+        return {
+            "RANDOM_STATE": self.RANDOM_STATE,
+            "TEST_SIZE": self.TEST_SIZE,
+            "VAL_SIZE": self.VAL_SIZE,
+            "N_SAMPLES": self.N_SAMPLES,
+            "N_FEATURES": self.N_FEATURES,
+            "TARGET_COLUMN": self.TARGET_COLUMN,
+            "SCALING_METHOD": self.SCALING_METHOD,
+            "ALGORITHMS": self.ALGORITHMS,
+        }
+
+    def save_json(self, file_path: Path) -> None:
+        """Export configuration parameters to a JSON file."""
+        import json
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f, indent=4)
+
 
 paths = PathConfig()
 config = ModelConfig()
+
