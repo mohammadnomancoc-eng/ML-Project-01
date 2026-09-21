@@ -1,4 +1,4 @@
-﻿"""Unit and Integration Tests for ML Pipeline Components."""
+"""Unit and Integration Tests for ML Pipeline Components."""
 
 import pytest
 import numpy as np
@@ -57,3 +57,45 @@ def test_artifact_serialization(tmp_path):
 
     assert loaded_obj["key"] == "test_value"
     assert loaded_obj["weights"] == [1.0, 2.0, 3.0]
+
+
+def test_loss_functions():
+    """Verify custom loss function calculations."""
+    from loss_functions import huber_loss, quantile_loss, smape_loss, wape_loss
+
+    y_true = np.array([10.0, 20.0, 30.0])
+    y_pred = np.array([12.0, 18.0, 33.0])
+
+    assert huber_loss(y_true, y_pred) >= 0.0
+    assert quantile_loss(y_true, y_pred, 0.5) >= 0.0
+    assert smape_loss(y_true, y_pred) >= 0.0
+    assert wape_loss(y_true, y_pred) >= 0.0
+
+
+def test_learning_rate_scheduler():
+    """Verify learning rate schedule trajectory generation."""
+    from learning_rate_scheduler import LRScheduler
+
+    schedule = LRScheduler.generate_schedule(
+        scheduler_type="warm_restart", initial_lr=0.01, total_epochs=20, t_0=5, t_mult=2
+    )
+    assert len(schedule) == 20
+    assert all(lr >= 0.0 for lr in schedule)
+
+
+def test_data_cleaner_utilities():
+    """Verify constant column dropping and missing category imputation."""
+    from data_cleaner import DataCleaner
+
+    df = pd.DataFrame({
+        "constant_col": [1, 1, 1],
+        "var_col": [1, 2, 3],
+        "cat_col": ["a", None, "c"],
+    })
+    dropped = DataCleaner.drop_constant_columns(df)
+    assert "constant_col" not in dropped.columns
+    assert "var_col" in dropped.columns
+
+    imputed = DataCleaner.impute_missing_categories(df)
+    assert imputed["cat_col"].isnull().sum() == 0
+
