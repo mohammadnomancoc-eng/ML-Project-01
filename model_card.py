@@ -1,4 +1,4 @@
-﻿"""Automated Model Card Generator (Markdown Documentation)."""
+"""Automated Model Card Generator (Markdown Documentation)."""
 
 from datetime import datetime
 from pathlib import Path
@@ -67,3 +67,29 @@ class ModelCardGenerator:
 
         logger.info(f"Model Card written to: {output_path}")
         return output_path
+
+    @staticmethod
+    def generate_json_manifest(
+        model_name: str,
+        version: str,
+        metrics: Dict[str, float],
+        hyperparameters: Dict[str, Any],
+        output_filename: str = "model_manifest.json",
+    ) -> Path:
+        """Exports model metadata manifest in structured JSON format."""
+        import json
+
+        manifest = {
+            "model_name": model_name,
+            "version": version,
+            "created_at": datetime.now().isoformat(),
+            "metrics": metrics,
+            "hyperparameters": hyperparameters,
+            "status": "validated",
+        }
+        output_path = paths.OUTPUT_DIR / output_filename
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=4)
+        logger.info(f"Model manifest saved to {output_path}")
+        return output_path
+
