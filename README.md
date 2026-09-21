@@ -1,4 +1,4 @@
-﻿# ML-Project-01 — End-to-End Machine Learning Pipeline 🧠⚡
+# ML-Project-01 — End-to-End Machine Learning Pipeline 🧠⚡
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3%2B-F7931E.svg?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
@@ -60,3 +60,21 @@ python main.py --mode train
 ```bash
 python main.py --mode serve --port 8000
 ```
+
+### 4. Run Test Suite
+
+```bash
+pytest test_pipeline.py -v
+```
+
+---
+
+## 🛠️ Pipeline Highlights & Key Features
+
+- **Automated Validation**: Pydantic input schemas and DataFrame range checks (`validator.py`).
+- **Data Augmentation**: Gaussian jitter, linear interpolation, and synthetic anomaly injection (`synthetic_generator.py`).
+- **Telemetry & Monitoring**: Hardware snapshots, disk space tracking, and memory monitoring (`system_health.py`).
+- **Business Cost Impact**: Asymmetric financial loss modeling and cloud hosting cost estimator (`cost_analyzer.py`).
+- **Metric Tracking**: Exponential moving averages and Markdown summary tables (`metric_tracker.py`).
+- **Model Card Automation**: Automatic Markdown documentation and JSON manifests (`model_card.py`).
+
