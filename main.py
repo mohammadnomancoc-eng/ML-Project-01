@@ -15,24 +15,34 @@ from visualizer import MLVisualizer
 from model_serializer import ModelSerializer
 from model_registry import ModelRegistry
 from pipeline_profiler import PipelineProfiler
+from conformal_predictor import ConformalPredictor
+from model_lineage import LineageTracker
+from data_sanitizer import DataSanitizer
 from config import config, paths
 from logger import logger
 
 
-def run_pipeline(enable_profiler: bool = False):
+def run_pipeline(enable_profiler: bool = False, enable_conformal: bool = True):
     """Executes the full machine learning training & evaluation pipeline."""
     start_total = time.time()
     logger.info("=== Starting End-to-End ML Pipeline ===")
     profiler = PipelineProfiler() if enable_profiler else None
+    lineage = LineageTracker()
 
-    # 1. Generate / Load Data
+    # 1. Generate / Load Data & Sanitize
     if profiler:
         with profiler.track_stage("1_Data_Generation_and_EDA"):
             df = DataLoader.generate_synthetic_dataset()
+            sanitizer = DataSanitizer()
+            df = sanitizer.sanitize_dataframe(df)
             EDAAnalyzer.generate_summary(df)
     else:
         df = DataLoader.generate_synthetic_dataset()
+        sanitizer = DataSanitizer()
+        df = sanitizer.sanitize_dataframe(df)
         EDAAnalyzer.generate_summary(df)
+
+    lineage.record_node("raw_dataset", "dataset", metadata={"rows": len(df), "columns": len(df.columns)})
 
     # 2. Split Data
     X_train, X_val, X_test, y_train, y_val, y_test = DataLoader.split_dataset(df)
@@ -52,6 +62,9 @@ def run_pipeline(enable_profiler: bool = False):
         X_test_clean = preprocessor.transform(X_test)
         ModelSerializer.save_artifact(preprocessor, "preprocessor.joblib")
 
+    lineage.record_node("preprocessor", "transform", artifact_path=paths.MODELS_DIR / "preprocessor.joblib")
+    lineage.record_edge("raw_dataset", "preprocessor")
+
     # 4. Feature Engineering (Scaling & Encoders)
     if profiler:
         with profiler.track_stage("3_Feature_Engineering"):
@@ -66,6 +79,9 @@ def run_pipeline(enable_profiler: bool = False):
         X_val_eng = feature_engineer.transform(X_val_clean)
         X_test_eng = feature_engineer.transform(X_test_clean)
         ModelSerializer.save_artifact(feature_engineer, "feature_engineer.joblib")
+
+    lineage.record_node("feature_engineer", "transform", artifact_path=paths.MODELS_DIR / "feature_engineer.joblib")
+    lineage.record_edge("preprocessor", "feature_engineer")
 
     # 5. Visualizer
     viz = MLVisualizer()
@@ -125,16 +141,31 @@ def run_pipeline(enable_profiler: bool = False):
     registry.register_model(
         model_name=best_model_name,
         artifact_filename="best_model.joblib",
-        version="v1.1.0",
+        version="v1.2.0",
         stage="Production",
         metrics=eval_results.get(best_model_name, {}),
         description=f"Best evaluated model ({best_model_name}) from pipeline run.",
     )
 
-    # 9. Test set prediction visualization & residual analysis
+    lineage.record_node("best_model", "model", metadata={"best_algorithm": best_model_name, "r2": best_r2}, artifact_path=paths.MODELS_DIR / "best_model.joblib")
+    lineage.record_edge("feature_engineer", "best_model")
+
+    # 9. Conformal Prediction Calibration & Interval Estimation
+    if enable_conformal:
+        val_preds = best_model.predict(X_val_eng)
+        conformal = ConformalPredictor(coverage_level=0.90)
+        conformal.calibrate(y_val.values, val_preds)
+        
+        test_preds = best_model.predict(X_test_eng)
+        conformal_report = conformal.evaluate_empirical_coverage(y_test.values, test_preds)
+        logger.info(f"Conformal Calibration Guarantee: {conformal_report}")
+
+    # 10. Test set prediction visualization & residual analysis
     y_test_pred = best_model.predict(X_test_eng)
     viz.plot_predictions_vs_actual(y_test.values, y_test_pred)
     viz.plot_residual_distribution(y_test.values, y_test_pred)
+
+    lineage.export_lineage_manifest()
 
     if profiler:
         print("\n--- Pipeline Profiler Report ---")
@@ -148,9 +179,9 @@ def main():
     parser = argparse.ArgumentParser(description="ML-Project-01 CLI")
     parser.add_argument(
         "--mode",
-        choices=["train", "serve", "profile", "registry"],
+        choices=["train", "serve", "profile", "registry", "lineage"],
         default="train",
-        help="Execute training pipeline, launch REST API server, profile latency, or inspect registry",
+        help="Execute training pipeline, launch REST API server, profile latency, inspect registry, or export lineage",
     )
     parser.add_argument("--port", type=int, default=8000, help="Port for FastAPI server")
     args = parser.parse_args()
@@ -163,6 +194,9 @@ def main():
     elif args.mode == "registry":
         registry = ModelRegistry()
         print("Registry Manifest:", registry._load_manifest())
+    elif args.mode == "lineage":
+        lineage = LineageTracker()
+        print(f"Lineage Manifest located at: {lineage.LINEAGE_FILE}")
 
 
 if __name__ == "__main__":
