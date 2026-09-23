@@ -42,28 +42,39 @@ Performs real-time single-sample regression inference.
 
 ---
 
-## 🐍 Python Core Modules
+## 🐍 Python Core & Extended Modules
 
 | Module | Primary Class | Purpose |
 |---|---|---|
 | `data_loader.py` | `DataLoader` | Synthetic dataset generation & 3-way splits |
 | `data_sampler.py` | `DataSampler` | Reservoir sampling, stratified quantile sampling, and balanced subsets |
+| `data_sanitizer.py` | `DataSanitizer` | Automated PII masking, email/phone scrubbing, and data anonymization |
+| `dataset_fingerprint.py` | `DatasetFingerprinter` | SHA-256 cryptographic dataset hashing and statistical moment signatures |
 | `preprocessor.py` | `DataPreprocessor` | Missing value imputation & IQR outlier clipping |
 | `missing_value_handler.py` | `MissingValueHandler` | KNN imputation, simple median, and missingness indicators |
 | `feature_engineer.py` | `FeatureEngineer` | Dynamic scaling (Standard/MinMax/Robust) & One-Hot Encoding |
+| `feature_clusterer.py` | `FeatureClusterer` | Hierarchical correlation clustering and redundancy reduction |
+| `target_encoder.py` | `OutOfFoldTargetEncoder` | Out-of-fold target encoding with Bayesian smoothing |
+| `feature_hash_encoder.py` | `FeatureHashEncoder` | Fixed-memory hashing trick for high-cardinality categoricals |
 | `interaction_generator.py` | `FeatureInteractionGenerator` | Pairwise product, ratio, and difference feature synthesis |
+| `feature_cache.py` | `FeatureStoreCache` | Offline-to-online TTL feature store cache |
 | `leakage_detector.py` | `DataLeakageDetector` | Target correlation leak and split contamination auditing |
 | `concept_drift_detector.py` | `ConceptDriftDetector` | Page-Hinkley streaming error drift and degradation detector |
-| `feature_selector.py` | `FeatureSelector` | VarianceThreshold & Mutual Information selection |
-| `cross_validator.py` | `CrossValidator` | K-Fold cross-validation score & variance metrics |
-| `ensemble_model.py` | `EnsembleBuilder` | Voting & Stacking Regressor meta-models |
-| `anomaly_scorer.py` | `EnsembleAnomalyScorer` | Multi-method consensus Isolation Forest & LOF anomaly scorer |
-| `outlier_detector.py` | `OutlierDetector` | Isolation Forest & LOF anomaly detection |
-| `data_drift_detector.py` | `DataDriftDetector` | Kolmogorov-Smirnov & PSI statistical drift checks |
+| `drift_alerter.py` | `DriftAlerter` | Multi-channel Slack, Discord, and webhook alert dispatcher |
 | `threshold_optimizer.py` | `ThresholdOptimizer` | Decision threshold tuning for F-beta, Youden's J, and business cost matrices |
+| `model_calibrator.py` | `ModelCalibrator` | Platt scaling, Isotonic regression, and ECE metric calibrator |
+| `conformal_predictor.py` | `ConformalPredictor` | Split conformal prediction intervals with coverage guarantees |
+| `subgroup_auditor.py` | `SubgroupAuditor` | Disparity ratio, bias, and underperforming cohort slice auditor |
 | `adversarial_tester.py` | `AdversarialRobustnessTester` | Gaussian noise injection and feature dropout stress testing |
 | `model_registry.py` | `ModelRegistry` | Semantic artifact versioning and staging lifecycle manager |
+| `model_lineage.py` | `LineageTracker` | DAG artifact lineage provenance and checksum tracker |
 | `counterfactual_explainer.py` | `CounterfactualExplainer` | Minimal perturbation search and actionable counterfactuals |
+| `shap_approximator.py` | `ShapleyApproximator` | Fast Monte-Carlo Shapley feature attribution |
+| `bayesian_optimizer.py` | `BayesianHyperparameterOptimizer`| Gaussian Process SMBO with Expected Improvement acquisition |
+| `streaming_learner.py` | `StreamingOnlineLearner` | Online SGD regressor with incremental partial_fit updates |
+| `tabular_synthesizer.py` | `TabularCopulaSynthesizer` | Gaussian Copula multivariate tabular data synthesizer |
+| `sample_weigher.py` | `SampleWeigher` | Temporal exponential decay, inverse class balance, and density weights |
+| `multiclass_evaluator.py` | `MulticlassEvaluator` | Multiclass F1-macro/weighted, Cohen's Kappa, and MCC reports |
 | `pipeline_profiler.py` | `PipelineProfiler` | Stage-by-stage latency profiler and Markdown waterfall reports |
 | `data_contract.py` | `DataContract` | Strict schema validation, value bounds, and allowed category constraints |
 | `model_trainer.py` | `ModelTrainer` | Multi-algorithm estimator fitting & time tracking |
