@@ -1,4 +1,4 @@
-﻿"""FastAPI REST Service for Model Deployment and Inference."""
+"""FastAPI REST Service for Model Deployment and Inference."""
 
 import time
 import pandas as pd
@@ -76,3 +76,11 @@ def predict_batch(payload: BatchPredictionRequest):
     except Exception as e:
         logger.error(f"Batch inference error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/metrics", tags=["Monitoring"])
+def get_metrics():
+    return {
+        "status": "online",
+        "model_loaded": predictor is not None,
+    }
