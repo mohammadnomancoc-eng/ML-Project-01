@@ -80,6 +80,19 @@ class TestExtendedModules(unittest.TestCase):
         self.assertIn("content_sha256", fp)
         self.assertEqual(fp["shape"]["rows"], 3)
 
+    def test_mase_loss(self):
+        from loss_functions import mase_loss
+        y_t = np.array([10.0, 12.0, 15.0])
+        y_p = np.array([10.5, 12.2, 14.8])
+        loss = mase_loss(y_t, y_p)
+        self.assertGreaterEqual(loss, 0.0)
+
+    def test_polynomial_decay(self):
+        from learning_rate_scheduler import LRScheduler
+        schedule = LRScheduler.generate_schedule("polynomial", initial_lr=0.01, total_epochs=10, power=2.0)
+        self.assertEqual(len(schedule), 10)
+        self.assertLessEqual(schedule[-1], schedule[0])
+
 
 if __name__ == "__main__":
     unittest.main()
