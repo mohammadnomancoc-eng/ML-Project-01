@@ -1,4 +1,4 @@
-﻿"""Model Training Suite supporting multiple algorithms."""
+"""Model Training Suite supporting multiple algorithms."""
 
 import time
 import pandas as pd
@@ -46,3 +46,14 @@ class ModelTrainer:
         if name not in self.trained_models_:
             raise KeyError(f"Model '{name}' has not been trained yet.")
         return self.trained_models_[name]
+
+    def get_training_summary(self) -> Dict[str, Dict[str, Any]]:
+        """Returns structured metadata summary of trained algorithms and elapsed training durations."""
+        return {
+            name: {
+                "algorithm_class": type(model).__name__,
+                "training_duration_seconds": self.training_times_.get(name, 0.0),
+                "is_fitted": hasattr(model, "predict"),
+            }
+            for name, model in self.trained_models_.items()
+        }
