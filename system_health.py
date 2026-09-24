@@ -49,3 +49,22 @@ class SystemHealthMonitor:
         disk = SystemHealthMonitor.check_disk_space()
         return disk["percent_free"] >= min_free_disk_percent
 
+    @staticmethod
+    def check_hardware_acceleration() -> Dict[str, Any]:
+        """Detects whether hardware acceleration or CUDA drivers are available."""
+        cuda_available = False
+        device_name = "CPU"
+
+        try:
+            import torch
+            cuda_available = torch.cuda.is_available()
+            if cuda_available:
+                device_name = torch.cuda.get_device_name(0)
+        except ImportError:
+            pass
+
+        return {
+            "cuda_available": cuda_available,
+            "primary_device": device_name,
+        }
+
