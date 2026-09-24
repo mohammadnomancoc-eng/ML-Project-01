@@ -1,4 +1,4 @@
-﻿"""Model Evaluation and Performance Metrics Suite."""
+"""Model Evaluation and Performance Metrics Suite."""
 
 import numpy as np
 import pandas as pd
@@ -33,6 +33,11 @@ class ModelEvaluator:
         p = n_features if n_features else 1
         adj_r2 = 1 - (1 - r2) * (n - 1) / (n - p - 1) if n > p + 1 else r2
 
+        # MSLE calculation if values are non-negative
+        msle = None
+        if np.all(np.asarray(y_true) >= 0) and np.all(np.asarray(y_pred) >= 0):
+            msle = round(float(np.mean((np.log1p(y_true) - np.log1p(y_pred)) ** 2)), 4)
+
         metrics = {
             "rmse": round(float(rmse), 4),
             "mae": round(float(mae), 4),
@@ -41,6 +46,7 @@ class ModelEvaluator:
             "adjusted_r2": round(float(adj_r2), 4),
             "max_error": round(float(max_err), 4),
             "explained_variance": round(float(exp_var), 4),
+            "msle": msle,
         }
 
         logger.info(f"[{model_name}] Eval — RMSE: {metrics['rmse']} | MAE: {metrics['mae']} | R2: {metrics['r2_score']} | Adj R2: {metrics['adjusted_r2']}")
