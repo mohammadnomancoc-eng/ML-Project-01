@@ -85,3 +85,11 @@ class DataSampler:
         result_df = pd.concat(balanced_groups, axis=0).sample(frac=1.0, random_state=random_state).reset_index(drop=True)
         logger.info(f"Balanced categorical dataset created with shape {result_df.shape}.")
         return result_df
+
+    @staticmethod
+    def systematic_sample(df: pd.DataFrame, step_size: int = 5, start_index: int = 0) -> pd.DataFrame:
+        """Samples rows at fixed periodic intervals."""
+        indices = np.arange(start_index, len(df), step_size)
+        sampled = df.iloc[indices].reset_index(drop=True)
+        logger.info(f"Systematic sampling extracted {len(sampled)} rows (step={step_size}).")
+        return sampled
