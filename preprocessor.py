@@ -1,4 +1,4 @@
-﻿"""Data Cleaning and Preprocessing Pipeline."""
+"""Data Cleaning and Preprocessing Pipeline."""
 
 import numpy as np
 import pandas as pd
@@ -10,8 +10,9 @@ from logger import logger
 class DataPreprocessor(BaseEstimator, TransformerMixin):
     """Handles missing values, infinite values, outlier clipping, and data sanitation."""
 
-    def __init__(self, iqr_multiplier: float = 1.5, drop_constants: bool = True):
+    def __init__(self, iqr_multiplier: float = 1.5, outlier_strategy: str = "iqr", drop_constants: bool = True):
         self.iqr_multiplier = iqr_multiplier
+        self.outlier_strategy = outlier_strategy
         self.drop_constants = drop_constants
         self.numeric_medians_: dict = {}
         self.categorical_modes_: dict = {}
@@ -19,7 +20,7 @@ class DataPreprocessor(BaseEstimator, TransformerMixin):
         self.constant_columns_: List[str] = []
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
-        """Learns imputation statistics and IQR bounds from training data."""
+        """Learns imputation statistics and IQR/MAD bounds from training data."""
         logger.info("Fitting DataPreprocessor on training set...")
         X = X.copy()
 
@@ -33,17 +34,24 @@ class DataPreprocessor(BaseEstimator, TransformerMixin):
         numeric_cols = X.select_dtypes(include=[np.number]).columns
         categorical_cols = X.select_dtypes(exclude=[np.number]).columns
 
-        # Numeric medians & IQR
+        # Numeric medians & bounds
         for col in numeric_cols:
             series = X[col].replace([np.inf, -np.inf], np.nan)
-            self.numeric_medians_[col] = series.median()
-            q1 = series.quantile(0.25)
-            q3 = series.quantile(0.75)
-            iqr = q3 - q1
-            self.iqr_bounds_[col] = (
-                q1 - self.iqr_multiplier * iqr,
-                q3 + self.iqr_multiplier * iqr,
-            )
+            med = series.median()
+            self.numeric_medians_[col] = med
+
+            if self.outlier_strategy == "mad":
+                mad = np.median(np.abs(series.dropna() - med))
+                bound_margin = self.iqr_multiplier * 1.4826 * (mad + 1e-8)
+                self.iqr_bounds_[col] = (med - bound_margin, med + bound_margin)
+            else:
+                q1 = series.quantile(0.25)
+                q3 = series.quantile(0.75)
+                iqr = q3 - q1
+                self.iqr_bounds_[col] = (
+                    q1 - self.iqr_multiplier * iqr,
+                    q3 + self.iqr_multiplier * iqr,
+                )
 
         # Categorical modes
         for col in categorical_cols:
