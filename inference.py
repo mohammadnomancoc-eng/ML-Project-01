@@ -1,4 +1,4 @@
-﻿"""Inference and Prediction Pipeline Module."""
+"""Inference and Prediction Pipeline Module."""
 
 import time
 import numpy as np
@@ -41,3 +41,20 @@ class ModelPredictor:
         pred = self.predict_single(sample_dict)
         latency_ms = round((time.perf_counter() - start) * 1000, 3)
         return pred, latency_ms
+
+    def benchmark_latency_percentiles(self, df_sample: pd.DataFrame, n_runs: int = 100) -> Dict[str, float]:
+        """Measures p50, p95, and p99 inference latency percentiles over n_runs."""
+        latencies = []
+        sample_dict = df_sample.iloc[0].to_dict()
+
+        for _ in range(n_runs):
+            start = time.perf_counter()
+            _ = self.predict_single(sample_dict)
+            latencies.append((time.perf_counter() - start) * 1000)
+
+        return {
+            "p50_latency_ms": round(float(np.percentile(latencies, 50)), 3),
+            "p95_latency_ms": round(float(np.percentile(latencies, 95)), 3),
+            "p99_latency_ms": round(float(np.percentile(latencies, 99)), 3),
+            "mean_latency_ms": round(float(np.mean(latencies)), 3),
+        }
