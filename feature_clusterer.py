@@ -66,3 +66,10 @@ class FeatureClusterer:
     def fit_transform(self, X: pd.DataFrame) -> pd.DataFrame:
         """Fits clustering and transforms the dataset in a single step."""
         return self.fit(X).transform(X)
+
+    def get_cluster_mapping(self) -> Dict[int, List[str]]:
+        """Returns dictionary of cluster IDs mapped to grouped feature names."""
+        mapping = {}
+        for feat, cl in self.cluster_assignments_.items():
+            mapping.setdefault(cl, []).append(feat)
+        return mapping
