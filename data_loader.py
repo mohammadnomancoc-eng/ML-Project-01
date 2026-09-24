@@ -1,4 +1,4 @@
-﻿"""Data Ingestion and Synthetic Dataset Generation Module."""
+"""Data Ingestion and Synthetic Dataset Generation Module."""
 
 import numpy as np
 import pandas as pd
@@ -63,18 +63,27 @@ class DataLoader:
         target_col: str = config.TARGET_COLUMN,
         test_size: float = config.TEST_SIZE,
         val_size: float = config.VAL_SIZE,
+        stratify_quantiles: Optional[int] = None,
     ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series]:
-        """Performs 3-way train/validation/test split."""
+        """Performs 3-way train/validation/test split with optional quantile stratification."""
         X = df.drop(columns=[target_col])
         y = df[target_col]
 
+        strat_bins = None
+        if stratify_quantiles is not None:
+            strat_bins = pd.qcut(y, q=stratify_quantiles, labels=False, duplicates="drop")
+
         X_train_val, X_test, y_train_val, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=config.RANDOM_STATE
+            X, y, test_size=test_size, random_state=config.RANDOM_STATE, stratify=strat_bins
         )
 
         adjusted_val_size = val_size / (1.0 - test_size)
+        val_strat = None
+        if stratify_quantiles is not None:
+            val_strat = pd.qcut(y_train_val, q=stratify_quantiles, labels=False, duplicates="drop")
+
         X_train, X_val, y_train, y_val = train_test_split(
-            X_train_val, y_train_val, test_size=adjusted_val_size, random_state=config.RANDOM_STATE
+            X_train_val, y_train_val, test_size=adjusted_val_size, random_state=config.RANDOM_STATE, stratify=val_strat
         )
 
         logger.info(f"Data split sizes — Train: {len(X_train)}, Val: {len(X_val)}, Test: {len(X_test)}")
