@@ -1,4 +1,4 @@
-﻿"""Data & Model Performance Visualization Utilities."""
+"""Data & Model Performance Visualization Utilities."""
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -67,4 +67,22 @@ class MLVisualizer:
         plt.savefig(output_path, dpi=300)
         plt.close()
         logger.info(f"Saved residual distribution plot to: {output_path}")
+        return output_path
+
+    def plot_qq_plot(
+        self, y_true: np.ndarray, y_pred: np.ndarray, filename: str = "residual_qq_plot.png"
+    ) -> Path:
+        """Generates Quantile-Quantile (Q-Q) plot to evaluate residual normality."""
+        from scipy import stats
+
+        residuals = y_true - y_pred
+        plt.figure(figsize=(7, 6))
+        stats.probplot(residuals, dist="norm", plot=plt)
+        plt.title("Normal Q-Q Plot of Residuals", fontsize=13)
+        plt.tight_layout()
+
+        output_path = paths.OUTPUT_DIR / filename
+        plt.savefig(output_path, dpi=300)
+        plt.close()
+        logger.info(f"Saved Q-Q plot to: {output_path}")
         return output_path
