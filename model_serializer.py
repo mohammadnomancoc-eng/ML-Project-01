@@ -1,4 +1,4 @@
-﻿"""Model Artifact Persistence and Deserialization Module."""
+"""Model Artifact Persistence and Deserialization Module."""
 
 import json
 import joblib
@@ -36,3 +36,27 @@ class ModelSerializer:
             raise FileNotFoundError(f"Artifact not found at {file_path}")
         logger.info(f"Loading artifact from: {file_path}")
         return joblib.load(file_path)
+
+    @staticmethod
+    def compute_checksum(filename: str) -> str:
+        """Computes SHA-256 hash of a saved artifact."""
+        import hashlib
+
+        file_path = paths.MODELS_DIR / filename
+        if not file_path.exists():
+            raise FileNotFoundError(f"Artifact not found at {file_path}")
+
+        sha256 = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    @staticmethod
+    def verify_checksum(filename: str, expected_hash: str) -> bool:
+        """Verifies integrity of artifact against expected SHA-256 hash."""
+        actual_hash = ModelSerializer.compute_checksum(filename)
+        is_match = actual_hash.lower() == expected_hash.lower()
+        if not is_match:
+            logger.warning(f"Integrity check failed for {filename}! Expected: {expected_hash}, Got: {actual_hash}")
+        return is_match
