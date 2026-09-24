@@ -77,3 +77,7 @@ class DriftAlerter:
         self.alert_history.append(record)
         logger.warning(f"[DriftAlerter] ({severity}) {title} - {details}")
         return record
+
+    def clear_history(self) -> None:
+        """Clears the local in-memory alert history log."""
+        self.alert_history.clear()
