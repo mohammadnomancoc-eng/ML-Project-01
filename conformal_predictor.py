@@ -67,3 +67,7 @@ class ConformalPredictor:
             "interval_margin": round(self.quantile_residual_, 4),
             "status": "VALIDATED" if empirical_cov >= (self.coverage_level - 0.05) else "UNDERCOVERED",
         }
+
+    def get_interval_margin(self) -> float:
+        """Returns the calibrated +/- error interval margin width."""
+        return self.quantile_residual_
