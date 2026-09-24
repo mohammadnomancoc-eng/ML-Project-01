@@ -77,3 +77,13 @@ class ModelConfig:
 paths = PathConfig()
 config = ModelConfig()
 
+
+def set_seed(seed: int = 42) -> None:
+    """Sets global random seeds for numpy, random, and environment for reproducibility."""
+    import random
+    import numpy as np
+
+    random.seed(seed)
+    np.random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+
