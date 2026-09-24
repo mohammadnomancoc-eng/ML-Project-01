@@ -49,3 +49,10 @@ class MetricTracker:
             )
         return "\n".join(lines)
 
+    def export_csv(self, file_path: str) -> None:
+        """Exports tracked metric history to CSV."""
+        import pandas as pd
+
+        df = pd.DataFrame(dict(self.history))
+        df.to_csv(file_path, index_label="step")
+
