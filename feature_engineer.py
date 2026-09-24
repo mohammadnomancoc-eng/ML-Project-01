@@ -1,10 +1,10 @@
-﻿"""Feature Engineering and Transformation Module."""
+"""Feature Engineering and Transformation Module."""
 
 import numpy as np
 import pandas as pd
 from typing import List, Optional
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, OneHotEncoder, PolynomialFeatures
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, PowerTransformer, OneHotEncoder, PolynomialFeatures
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from config import config
@@ -25,6 +25,8 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
             return MinMaxScaler()
         elif self.scaling_method == "robust":
             return RobustScaler()
+        elif self.scaling_method == "power":
+            return PowerTransformer(method="yeo-johnson")
         return StandardScaler()
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
