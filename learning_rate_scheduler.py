@@ -34,6 +34,12 @@ class LRScheduler:
             t_i *= t_mult
         return min_lr + 0.5 * (initial_lr - min_lr) * (1 + math.cos(math.pi * t_curr / t_i))
 
+    @staticmethod
+    def polynomial_decay(initial_lr: float, epoch: int, total_epochs: int, power: float = 1.0, min_lr: float = 1e-6) -> float:
+        """Polynomial decay: decays learning rate with power polynomial curve."""
+        decay_factor = (1.0 - (epoch / max(1, total_epochs))) ** power
+        return (initial_lr - min_lr) * max(0.0, decay_factor) + min_lr
+
     @classmethod
     def generate_schedule(cls, scheduler_type: str, initial_lr: float, total_epochs: int, **kwargs) -> List[float]:
         """Generate full learning rate trajectory list for the entire training cycle."""
@@ -47,6 +53,8 @@ class LRScheduler:
                 lr = cls.cosine_annealing(initial_lr, epoch, total_epochs, **kwargs)
             elif scheduler_type == "warm_restart":
                 lr = cls.cosine_annealing_warm_restarts(initial_lr, epoch, **kwargs)
+            elif scheduler_type == "polynomial":
+                lr = cls.polynomial_decay(initial_lr, epoch, total_epochs, **kwargs)
             else:
                 lr = initial_lr
             schedule.append(lr)
