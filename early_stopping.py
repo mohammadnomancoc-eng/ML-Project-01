@@ -23,16 +23,19 @@ class EarlyStopping:
         self.min_epochs = min_epochs
         self.relative_delta = relative_delta
         self.best_score: Optional[float] = None
+        self.best_weights: Optional[dict] = None
         self.counter: int = 0
         self.current_epoch: int = 0
         self.early_stop: bool = False
 
-    def step(self, current_score: float) -> bool:
+    def step(self, current_score: float, current_weights: Optional[dict] = None) -> bool:
         """Evaluates current epoch score and returns True if training should stop."""
         self.current_epoch += 1
 
         if self.best_score is None:
             self.best_score = current_score
+            if current_weights is not None:
+                self.best_weights = current_weights.copy()
             return False
 
         threshold = self.min_delta
@@ -46,6 +49,8 @@ class EarlyStopping:
 
         if improved:
             self.best_score = current_score
+            if current_weights is not None:
+                self.best_weights = current_weights.copy()
             self.counter = 0
             logger.info(f"Score improved to {current_score:.4f}. Resetting patience counter.")
         else:
@@ -67,5 +72,6 @@ class EarlyStopping:
             "current_epoch": self.current_epoch,
             "counter": self.counter,
             "early_stop_triggered": self.early_stop,
+            "has_best_weights": self.best_weights is not None,
         }
 
