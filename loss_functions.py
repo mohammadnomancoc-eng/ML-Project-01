@@ -44,3 +44,15 @@ def wape_loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
         return 0.0
     return float((np.sum(np.abs(y_true - y_pred)) / total_actual) * 100)
 
+
+def mase_loss(y_true: np.ndarray, y_pred: np.ndarray, y_train_baseline: np.ndarray = None) -> float:
+    """Computes Mean Absolute Scaled Error (MASE)."""
+    mae = np.mean(np.abs(y_true - y_pred))
+    if y_train_baseline is not None and len(y_train_baseline) > 1:
+        scale = np.mean(np.abs(np.diff(y_train_baseline)))
+    else:
+        scale = np.mean(np.abs(np.diff(y_true))) if len(y_true) > 1 else 1.0
+
+    return float(mae / (scale + 1e-8))
+
+
