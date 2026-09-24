@@ -93,3 +93,14 @@ class ModelCardGenerator:
         logger.info(f"Model manifest saved to {output_path}")
         return output_path
 
+    @staticmethod
+    def generate_bibtex_citation(model_name: str, author: str = "ML Engineering Team", year: int = 2026) -> str:
+        """Generates BibTeX citation block for repository and model documentation."""
+        clean_key = model_name.lower().replace(" ", "_").replace("-", "_")
+        return f"""@software{{{clean_key}_{year},
+  author = {{{author}}},
+  title = {{{model_name}: End-to-End Predictive Model}},
+  year = {{{year}}},
+  url = {{https://github.com/mohammadnomancoc-eng/ML-Project-01}}
+}}"""
+
