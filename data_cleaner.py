@@ -59,3 +59,13 @@ class DataCleaner:
             df_imputed[col] = df_imputed[col].fillna(fill_value)
         return df_imputed
 
+    @staticmethod
+    def drop_low_variance_columns(df: pd.DataFrame, variance_threshold: float = 1e-5) -> pd.DataFrame:
+        """Removes numeric columns with variance below specified threshold."""
+        num_cols = df.select_dtypes(include=["number"]).columns
+        low_var_cols = [col for col in num_cols if df[col].var() < variance_threshold]
+        if low_var_cols:
+            logger.info(f"Dropping {len(low_var_cols)} low-variance columns: {low_var_cols}")
+            return df.drop(columns=low_var_cols)
+        return df
+
