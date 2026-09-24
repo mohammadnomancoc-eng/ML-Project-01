@@ -67,3 +67,9 @@ class DataSanitizer:
                 report[col] = col_report
 
         return report
+
+    def register_custom_pattern(self, name: str, regex_pattern: str) -> None:
+        """Registers a custom PII pattern or sensitive token for masking."""
+        self.PATTERNS[name] = regex_pattern
+        self.compiled_regex[name] = re.compile(regex_pattern)
+        logger.info(f"Registered custom PII pattern: '{name}'")
