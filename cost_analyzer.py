@@ -57,3 +57,17 @@ class BusinessCostAnalyzer:
             "instance_concurrency": concurrency,
         }
 
+    @staticmethod
+    def estimate_carbon_footprint(
+        training_hours: float, average_wattage: float = 250.0, grid_emission_factor_kg_per_kwh: float = 0.475
+    ) -> Dict[str, float]:
+        """Estimates carbon footprint (kg CO2e) based on compute hours and hardware TDP."""
+        kwh_consumed = (training_hours * average_wattage) / 1000.0
+        co2_emissions_kg = kwh_consumed * grid_emission_factor_kg_per_kwh
+
+        return {
+            "kwh_consumed": round(kwh_consumed, 4),
+            "estimated_kg_co2": round(co2_emissions_kg, 4),
+            "carbon_offset_cost_usd": round(co2_emissions_kg * 0.02, 4),
+        }
+
