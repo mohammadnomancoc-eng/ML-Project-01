@@ -69,3 +69,11 @@ class DataFrameValidator:
                 violations.append(f"Column '{col}' has null ratio {null_ratio:.2%} > allowed {max_allowed_ratio:.2%}")
         return violations
 
+    @staticmethod
+    def validate_required_columns(df, required_columns: List[str]) -> List[str]:
+        """Verifies presence of all required columns in DataFrame."""
+        missing = [c for c in required_columns if c not in df.columns]
+        if missing:
+            return [f"Missing required columns: {missing}"]
+        return []
+
