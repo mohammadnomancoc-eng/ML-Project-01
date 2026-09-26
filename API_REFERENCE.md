@@ -90,6 +90,14 @@ Performs real-time single-sample regression inference.
 | `model_card.py` | `ModelCardGenerator` | Automated Markdown model cards and JSON metadata manifests |
 | `synthetic_generator.py` | `SyntheticAugmenter` | Gaussian jitter, interpolation & synthetic outlier injection |
 | `inference.py` | `ModelPredictor` | Real-time & batch prediction pipeline |
-| `batch_processor.py` | `BatchProcessor` | Streamed chunked CSV batch inference |
-| `alert_notifier.py` | `AlertNotifier` | Webhook alert dispatcher |
 | `database_connector.py` | `DatabaseConnector` | SQLite & SQL database connector |
+| `data_quality_auditor.py` | `DataQualityAuditor` | Automated dataset health and completeness auditing |
+| `distribution_drift.py` | `DistributionDriftEstimator` | Wasserstein Earth Mover's Distance distribution drift detection |
+| `data_slice_miner.py` | `DataSliceMiner` | High-error subpopulation cohort discovery |
+| `uncertainty_estimator.py` | `EnsembleUncertaintyEstimator` | Tree variance and epistemic uncertainty bounds |
+| `pipeline_checkpoint.py` | `PipelineCheckpointManager` | Intermediate pipeline state snapshot caching |
+| `residual_analyzer.py` | `ResidualDiagnosticAnalyzer` | Durbin-Watson and heteroscedasticity diagnostic checks |
+| `cloud_cost_optimizer.py` | `CloudCostOptimizer` | Latency SLA instance sizing and cost optimizer |
+| `feature_selector_v2.py` | `RecursiveFeatureSelector` | RFECV recursive feature elimination with cross-validation |
+| `model_rule_exporter.py` | `ModelRuleExporter` | Portable model formula and rule extraction |
+
