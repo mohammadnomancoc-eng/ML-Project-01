@@ -1,4 +1,4 @@
-﻿"""Multi-Method Ensemble Feature Ranking Suite."""
+"""Multi-Method Ensemble Feature Ranking Suite."""
 
 import pandas as pd
 import numpy as np
@@ -42,3 +42,9 @@ class EnsembleFeatureRanker:
 
         logger.info(f"Top 3 consensus features: {summary_df.index[:3].tolist()}")
         return summary_df
+
+    @classmethod
+    def select_top_k_features(cls, X: pd.DataFrame, y: pd.Series, top_k: int = 5) -> List[str]:
+        """Returns the top-K highest consensus ranked feature names."""
+        ranked = cls.compute_consensus_rank(X, y)
+        return ranked.index[:top_k].tolist()
