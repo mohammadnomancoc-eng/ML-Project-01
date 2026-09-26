@@ -179,9 +179,9 @@ def main():
     parser = argparse.ArgumentParser(description="ML-Project-01 CLI")
     parser.add_argument(
         "--mode",
-        choices=["train", "serve", "profile", "registry", "lineage"],
+        choices=["train", "serve", "profile", "registry", "lineage", "audit"],
         default="train",
-        help="Execute training pipeline, launch REST API server, profile latency, inspect registry, or export lineage",
+        help="Execute training pipeline, launch REST API server, profile latency, inspect registry, export lineage, or audit data quality",
     )
     parser.add_argument("--port", type=int, default=8000, help="Port for FastAPI server")
     args = parser.parse_args()
@@ -197,6 +197,11 @@ def main():
     elif args.mode == "lineage":
         lineage = LineageTracker()
         print(f"Lineage Manifest located at: {lineage.LINEAGE_FILE}")
+    elif args.mode == "audit":
+        from data_quality_auditor import DataQualityAuditor
+        df = DataLoader.generate_synthetic_dataset(save_to_disk=False)
+        quality_report = DataQualityAuditor.audit_quality(df)
+        print("Data Quality Report:", quality_report)
 
 
 if __name__ == "__main__":
