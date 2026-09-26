@@ -1,4 +1,4 @@
-﻿"""Target Variable Transformations (Log, Box-Cox, Yeo-Johnson)."""
+"""Target Variable Transformations (Log, Box-Cox, Yeo-Johnson)."""
 
 import numpy as np
 import pandas as pd
@@ -23,6 +23,8 @@ class TargetTransformer:
 
         if self.method == "log1p":
             return np.log1p(np.maximum(0, y_arr)).flatten()
+        elif self.method == "sqrt":
+            return np.sqrt(np.maximum(0, y_arr)).flatten()
         elif self.transformer:
             return self.transformer.fit_transform(y_arr).flatten()
         return y_arr.flatten()
@@ -33,6 +35,8 @@ class TargetTransformer:
 
         if self.method == "log1p":
             return np.expm1(y_arr).flatten()
+        elif self.method == "sqrt":
+            return (y_arr ** 2).flatten()
         elif self.transformer:
             return self.transformer.inverse_transform(y_arr).flatten()
         return y_arr.flatten()
