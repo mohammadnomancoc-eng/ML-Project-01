@@ -50,6 +50,23 @@ class AlertPayloadBuilder:
             ]
         }
 
+    @staticmethod
+    def build_teams_alert(title: str, severity: str, details: Dict[str, Any]) -> Dict[str, Any]:
+        """Formats payload for Microsoft Teams Message Cards."""
+        theme_color = "0076D7" if severity == "INFO" else ("FFCC00" if severity == "WARNING" else "D83B01")
+        facts = [{"name": k, "value": str(v)} for k, v in details.items()]
+        return {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "themeColor": theme_color,
+            "summary": title,
+            "sections": [{
+                "activityTitle": f"🚨 {title} ({severity})",
+                "facts": facts,
+                "markdown": True,
+            }],
+        }
+
 
 class DriftAlerter:
     """Manages dispatching alerts to configured endpoints."""
