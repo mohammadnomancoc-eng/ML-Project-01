@@ -20,9 +20,14 @@ class DataQualityAuditor:
         total_cells = n_rows * n_cols
         null_count = int(df.isnull().sum().sum())
         completeness_pct = round((1.0 - (null_count / max(1, total_cells))) * 100, 2)
+        duplicate_rows = int(df.duplicated().sum())
+        duplicate_ratio = round(duplicate_rows / max(1, n_rows), 4)
 
         column_reports = {}
         anomalies = []
+
+        if duplicate_rows > 0:
+            anomalies.append(f"Dataset contains {duplicate_rows} duplicate rows ({duplicate_ratio:.1%}).")
 
         for col in df.columns:
             series = df[col]
