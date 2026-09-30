@@ -42,3 +42,10 @@ class ResidualDiagnosticAnalyzer:
 
         logger.info(f"Residual Diagnostics: DW={dw_stat:.2f}, Skew={skewness:.2f}, Heteroscedasticity Corr={hetero_corr:.2f}")
         return results
+
+    @staticmethod
+    def detect_influential_outliers(residuals: np.ndarray, threshold_std: float = 3.0) -> list:
+        """Finds indices of standardized residual outliers exceeding threshold."""
+        std_res = (residuals - np.mean(residuals)) / (np.std(residuals) + 1e-8)
+        outlier_indices = np.where(np.abs(std_res) > threshold_std)[0].tolist()
+        return outlier_indices
