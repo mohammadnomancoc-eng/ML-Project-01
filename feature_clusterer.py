@@ -73,3 +73,8 @@ class FeatureClusterer:
         for feat, cl in self.cluster_assignments_.items():
             mapping.setdefault(cl, []).append(feat)
         return mapping
+
+    @property
+    def n_clusters(self) -> int:
+        """Returns the number of unique feature clusters formed."""
+        return len(set(self.cluster_assignments_.values()))
