@@ -71,3 +71,12 @@ class ConformalPredictor:
     def get_interval_margin(self) -> float:
         """Returns the calibrated +/- error interval margin width."""
         return self.quantile_residual_
+
+    def get_coverage_summary(self) -> Dict[str, Any]:
+        """Returns metadata summary of the conformal calibration status."""
+        return {
+            "is_calibrated": self.is_calibrated,
+            "target_coverage_level": self.coverage_level,
+            "alpha_significance": self.alpha,
+            "margin_error_bound": self.quantile_residual_,
+        }
