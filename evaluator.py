@@ -38,6 +38,8 @@ class ModelEvaluator:
         if np.all(np.asarray(y_true) >= 0) and np.all(np.asarray(y_pred) >= 0):
             msle = round(float(np.mean((np.log1p(y_true) - np.log1p(y_pred)) ** 2)), 4)
 
+        mbd = round(float(np.mean(y_pred - y_true)), 4)
+
         metrics = {
             "rmse": round(float(rmse), 4),
             "mae": round(float(mae), 4),
@@ -47,6 +49,7 @@ class ModelEvaluator:
             "max_error": round(float(max_err), 4),
             "explained_variance": round(float(exp_var), 4),
             "msle": msle,
+            "mean_bias_deviation": mbd,
         }
 
         logger.info(f"[{model_name}] Eval — RMSE: {metrics['rmse']} | MAE: {metrics['mae']} | R2: {metrics['r2_score']} | Adj R2: {metrics['adjusted_r2']}")
