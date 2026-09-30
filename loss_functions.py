@@ -56,3 +56,11 @@ def mase_loss(y_true: np.ndarray, y_pred: np.ndarray, y_train_baseline: np.ndarr
     return float(mae / (scale + 1e-8))
 
 
+def smooth_l1_loss(y_true: np.ndarray, y_pred: np.ndarray, beta: float = 1.0) -> float:
+    """Computes Smooth L1 / Huber-like loss."""
+    diff = np.abs(y_true - y_pred)
+    loss = np.where(diff < beta, 0.5 * (diff ** 2) / beta, diff - 0.5 * beta)
+    return float(np.mean(loss))
+
+
+
