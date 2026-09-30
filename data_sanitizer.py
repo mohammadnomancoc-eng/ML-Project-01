@@ -19,6 +19,7 @@ class DataSanitizer:
         "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
         "ip_address": r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b",
         "phone_number": r"\b(?:\+?\d{1,3}[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}\b",
+        "passport": r"\b[A-Z]{1,2}[0-9]{6,9}\b",
     }
 
     def __init__(self, mask_token: str = "[REDACTED]"):
