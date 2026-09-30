@@ -86,3 +86,23 @@ class MLVisualizer:
         plt.close()
         logger.info(f"Saved Q-Q plot to: {output_path}")
         return output_path
+
+    def plot_learning_curves(
+        self, train_scores: list, val_scores: list, metric_name: str = "Loss", filename: str = "learning_curves.png"
+    ) -> Path:
+        """Plots training and validation metric curves across epochs."""
+        plt.figure(figsize=(8, 5))
+        epochs = range(1, len(train_scores) + 1)
+        plt.plot(epochs, train_scores, "b-o", label=f"Training {metric_name}", lw=2)
+        plt.plot(epochs, val_scores, "r--s", label=f"Validation {metric_name}", lw=2)
+        plt.xlabel("Epochs", fontsize=11)
+        plt.ylabel(metric_name, fontsize=11)
+        plt.title(f"Model Learning Curves ({metric_name})", fontsize=13)
+        plt.legend()
+        plt.tight_layout()
+
+        output_path = paths.OUTPUT_DIR / filename
+        plt.savefig(output_path, dpi=300)
+        plt.close()
+        logger.info(f"Saved learning curves to: {output_path}")
+        return output_path
