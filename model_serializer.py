@@ -60,3 +60,8 @@ class ModelSerializer:
         if not is_match:
             logger.warning(f"Integrity check failed for {filename}! Expected: {expected_hash}, Got: {actual_hash}")
         return is_match
+
+    @staticmethod
+    def artifact_exists(filename: str) -> bool:
+        """Checks if artifact file exists in models directory."""
+        return (paths.MODELS_DIR / filename).exists()
