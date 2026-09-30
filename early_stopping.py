@@ -28,6 +28,14 @@ class EarlyStopping:
         self.current_epoch: int = 0
         self.early_stop: bool = False
 
+    def reset(self) -> None:
+        """Resets the internal tracking state of early stopping."""
+        self.best_score = None
+        self.best_weights = None
+        self.counter = 0
+        self.current_epoch = 0
+        self.early_stop = False
+
     def step(self, current_score: float, current_weights: Optional[dict] = None) -> bool:
         """Evaluates current epoch score and returns True if training should stop."""
         self.current_epoch += 1
