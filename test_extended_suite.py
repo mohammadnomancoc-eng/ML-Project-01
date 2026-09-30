@@ -93,6 +93,13 @@ class TestExtendedModules(unittest.TestCase):
         self.assertEqual(len(schedule), 10)
         self.assertLessEqual(schedule[-1], schedule[0])
 
+    def test_smooth_l1_loss(self):
+        from loss_functions import smooth_l1_loss
+        y_t = np.array([1.0, 2.0, 3.0])
+        y_p = np.array([1.2, 1.9, 3.8])
+        loss = smooth_l1_loss(y_t, y_p)
+        self.assertGreaterEqual(loss, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
