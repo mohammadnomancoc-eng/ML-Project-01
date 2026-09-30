@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.0] — 2026-09-30
+
+### Added
+- **JSON Configuration Loader**: `load_from_json` classmethod in `config.py`.
+- **Mean Bias Deviation**: `mean_bias_deviation` regression metric in `evaluator.py`.
+- **Smooth L1 Loss**: `smooth_l1_loss` loss computation in `loss_functions.py`.
+- **Duplicate Row Ratio**: Automatic duplicate row audit metric in `data_quality_auditor.py`.
+- **Passport PII Pattern**: Regex pattern masking for passport numbers in `data_sanitizer.py`.
+- **Metric History Reset**: `reset()` method in `metric_tracker.py`.
+- **Early Stopping Reset**: `reset()` method in `early_stopping.py`.
+- **Learning Curves Plotter**: `plot_learning_curves` in `visualizer.py`.
+- **Leverage Outlier Detector**: `detect_influential_outliers` in `residual_analyzer.py`.
+- **Conformal Coverage Summary**: `get_coverage_summary` in `conformal_predictor.py`.
+- **Cluster Count Property**: `n_clusters` property in `feature_clusterer.py`.
+- **Teams Webhook Formatter**: `build_teams_alert` in `drift_alerter.py`.
+- **Artifact Existence Check**: `artifact_exists` method in `model_serializer.py`.
+
+---
+
 ## [2.1.0] — 2026-09-24
 
 ### Added
