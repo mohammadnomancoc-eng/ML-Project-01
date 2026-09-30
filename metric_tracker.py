@@ -24,6 +24,11 @@ class MetricTracker:
             )
         return self.ema_values[metric_name]
 
+    def reset(self) -> None:
+        """Clears metric history and resets exponential moving averages."""
+        self.history.clear()
+        self.ema_values.clear()
+
     def get_summary(self) -> Dict[str, Dict[str, float]]:
         """Returns statistical summary of all tracked metrics."""
         summary = {}
