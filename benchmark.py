@@ -55,3 +55,11 @@ class ModelBenchmark:
 
         logger.info(f"Batch scalability throughput (req/s): {scalability_report}")
         return scalability_report
+
+    @staticmethod
+    def measure_execution_overhead(fn, *args, **kwargs) -> Dict[str, float]:
+        """Measures precise wall-clock runtime of an arbitrary callable."""
+        start = time.perf_counter()
+        result = fn(*args, **kwargs)
+        elapsed_ms = (time.perf_counter() - start) * 1000.0
+        return {"result": result, "elapsed_ms": round(elapsed_ms, 3)}
