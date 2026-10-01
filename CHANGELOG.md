@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.4.0] — 2026-10-01
+
+### Added
+- **Sample Weights Generator**: `generate_sample_weights` decay method in `data_loader.py`.
+- **Relative RMSE Metric**: `rrmse` error normalization metric in `evaluator.py`.
+- **ML Environment Inspector**: `get_ml_env_vars` helper in `system_health.py`.
+- **Callable Execution Benchmark**: `measure_execution_overhead` timing helper in `benchmark.py`.
+
+---
+
 ## [2.3.0] — 2026-09-30
 
 ### Added
