@@ -68,3 +68,8 @@ class SystemHealthMonitor:
             "primary_device": device_name,
         }
 
+    @staticmethod
+    def get_ml_env_vars() -> Dict[str, str]:
+        """Returns all ML-related environment variables set in the current process."""
+        return {k: v for k, v in os.environ.items() if k.startswith("ML_") or k.startswith("PYTHON")}
+
