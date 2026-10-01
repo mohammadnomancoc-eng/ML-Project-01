@@ -39,6 +39,8 @@ class ModelEvaluator:
             msle = round(float(np.mean((np.log1p(y_true) - np.log1p(y_pred)) ** 2)), 4)
 
         mbd = round(float(np.mean(y_pred - y_true)), 4)
+        mean_actual = np.mean(y_true)
+        rrmse = round(float(rmse / (abs(mean_actual) + 1e-8)), 4)
 
         metrics = {
             "rmse": round(float(rmse), 4),
@@ -50,6 +52,7 @@ class ModelEvaluator:
             "explained_variance": round(float(exp_var), 4),
             "msle": msle,
             "mean_bias_deviation": mbd,
+            "rrmse": rrmse,
         }
 
         logger.info(f"[{model_name}] Eval — RMSE: {metrics['rmse']} | MAE: {metrics['mae']} | R2: {metrics['r2_score']} | Adj R2: {metrics['adjusted_r2']}")
