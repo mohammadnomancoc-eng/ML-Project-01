@@ -88,3 +88,10 @@ class DataLoader:
 
         logger.info(f"Data split sizes — Train: {len(X_train)}, Val: {len(X_val)}, Test: {len(X_test)}")
         return X_train, X_val, X_test, y_train, y_val, y_test
+
+    @staticmethod
+    def generate_sample_weights(y: pd.Series, decay_rate: float = 0.01) -> np.ndarray:
+        """Generates sample importance weights based on target magnitude or index order."""
+        n = len(y)
+        weights = np.exp(-decay_rate * np.arange(n)[::-1])
+        return weights / np.mean(weights)
