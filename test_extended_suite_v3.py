@@ -45,6 +45,26 @@ class TestExtendedSuiteV3(unittest.TestCase):
         self.assertIn("recommended_instance", recommendation)
         self.assertGreater(recommendation["estimated_monthly_cost_usd"], 0)
 
+    def test_psi_and_cost_projection(self):
+        from cost_analyzer import BusinessCostAnalyzer
+        ref = np.random.normal(0, 1, 100)
+        curr = np.random.normal(0.1, 1, 100)
+        psi = DistributionDriftEstimator.calculate_population_stability_index(ref, curr)
+        self.assertIsInstance(psi, float)
+
+        proj = BusinessCostAnalyzer.project_annual_cloud_cost(100.0, 0.10)
+        self.assertEqual(proj["base_annual_cost_usd"], 1200.0)
+        self.assertEqual(proj["projected_next_year_usd"], 1320.0)
+
+    def test_data_cleaner_and_multiregion(self):
+        from data_cleaner import DataCleaner
+        clean_text = DataCleaner.strip_html_tags("<p>Hello <b>World</b></p>")
+        self.assertEqual(clean_text, "Hello World")
+
+        reg_costs = CloudCostOptimizer.estimate_multiregion_cost(100.0, ["us-east-1", "eu-west-1"])
+        self.assertIn("total_multiregion_usd", reg_costs)
+
 
 if __name__ == "__main__":
     unittest.main()
+
