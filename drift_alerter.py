@@ -98,3 +98,12 @@ class DriftAlerter:
     def clear_history(self) -> None:
         """Clears the local in-memory alert history log."""
         self.alert_history.clear()
+
+    def get_alert_counts_by_severity(self) -> Dict[str, int]:
+        """Returns aggregated breakdown counts of sent alerts by severity level."""
+        counts = {"INFO": 0, "WARNING": 0, "ERROR": 0, "CRITICAL": 0}
+        for alert in self.alert_history:
+            sev = alert.get("severity", "WARNING").upper()
+            counts[sev] = counts.get(sev, 0) + 1
+        return counts
+
