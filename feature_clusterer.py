@@ -78,3 +78,14 @@ class FeatureClusterer:
     def n_clusters(self) -> int:
         """Returns the number of unique feature clusters formed."""
         return len(set(self.cluster_assignments_.values()))
+
+    def get_cluster_centroids(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Computes mean centroid feature value across all cluster members."""
+        cluster_map = self.get_cluster_mapping()
+        centroids = pd.DataFrame(index=df.index)
+        for cl_id, feats in cluster_map.items():
+            valid_feats = [f for f in feats if f in df.columns]
+            if valid_feats:
+                centroids[f"cluster_{cl_id}_centroid"] = df[valid_feats].mean(axis=1)
+        return centroids
+
