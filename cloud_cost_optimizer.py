@@ -46,3 +46,22 @@ class CloudCostOptimizer:
             "max_sustainable_qps": inst["max_qps"],
             "headroom_percent": 0.0,
         }
+
+    REGION_COST_MULTIPLIERS = {
+        "us-east-1": 1.00,
+        "us-west-2": 1.00,
+        "eu-west-1": 1.08,
+        "ap-southeast-1": 1.14,
+        "ap-south-1": 1.06,
+    }
+
+    @classmethod
+    def estimate_multiregion_cost(cls, base_monthly_cost: float, regions: List[str]) -> Dict[str, float]:
+        """Calculates multi-region deployed costs factoring in regional price premiums."""
+        costs = {}
+        for reg in regions:
+            mult = cls.REGION_COST_MULTIPLIERS.get(reg, 1.10)
+            costs[reg] = round(base_monthly_cost * mult, 2)
+        costs["total_multiregion_usd"] = round(sum(costs.values()), 2)
+        return costs
+
