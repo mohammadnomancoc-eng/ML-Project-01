@@ -73,3 +73,14 @@ class SystemHealthMonitor:
         """Returns all ML-related environment variables set in the current process."""
         return {k: v for k, v in os.environ.items() if k.startswith("ML_") or k.startswith("PYTHON")}
 
+    @staticmethod
+    def get_process_thread_info() -> Dict[str, Any]:
+        """Returns active thread count and process identification details."""
+        import threading
+        return {
+            "active_threads": threading.active_count(),
+            "pid": os.getpid(),
+            "cwd": os.getcwd(),
+        }
+
+
