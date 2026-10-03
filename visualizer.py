@@ -106,3 +106,23 @@ class MLVisualizer:
         plt.close()
         logger.info(f"Saved learning curves to: {output_path}")
         return output_path
+
+    def plot_feature_correlation_ranking(
+        self, correlations: pd.Series, target_name: str = "Target", filename: str = "feature_corr_ranking.png"
+    ) -> Path:
+        """Plots horizontal bar chart ranking feature correlations with target variable."""
+        plt.figure(figsize=(9, max(4, len(correlations) * 0.35)))
+        sorted_corr = correlations.sort_values()
+        colors = ["#D9534F" if x < 0 else "#428BCA" for x in sorted_corr.values]
+        sorted_corr.plot(kind="barh", color=colors)
+        plt.axvline(0, color="gray", linestyle="--", lw=0.8)
+        plt.title(f"Feature Correlations with {target_name}", fontsize=13)
+        plt.xlabel("Correlation Coefficient", fontsize=11)
+        plt.tight_layout()
+
+        output_path = paths.OUTPUT_DIR / filename
+        plt.savefig(output_path, dpi=300)
+        plt.close()
+        logger.info(f"Saved feature correlation ranking to: {output_path}")
+        return output_path
+
