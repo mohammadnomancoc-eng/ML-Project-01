@@ -69,3 +69,12 @@ class DataCleaner:
             return df.drop(columns=low_var_cols)
         return df
 
+    @staticmethod
+    def strip_html_tags(text: str) -> str:
+        """Removes HTML tags and entities from string."""
+        if not isinstance(text, str):
+            return str(text)
+        clean = re.sub(r"<[^>]+>", "", text)
+        return re.sub(r"&[a-zA-Z0-9#]+;", " ", clean).strip()
+
+
