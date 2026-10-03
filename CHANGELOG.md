@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.0] — 2026-10-03
+
+### Added
+- **Quantile Clipping**: `clip_extreme_quantiles` static method in `preprocessor.py`.
+- **Quantile Transformation**: Added `"quantile"` uniform scaling method in `feature_engineer.py`.
+- **SMAPE Regression Metric**: Symmetric Mean Absolute Percentage Error in `evaluator.py`.
+- **Relative Squared Error (RSE)**: Loss calculation helper in `loss_functions.py`.
+- **Skewness Quality Auditing**: Added automatic skewness threshold warning checks in `data_quality_auditor.py`.
+- **IPv6 Redaction**: Added IPv6 address regex pattern masking in `data_sanitizer.py`.
+- **Exponential Variance**: `compute_exponential_variance` calculation in `metric_tracker.py`.
+- **Patience Remaining Property**: `patience_remaining` property helper in `early_stopping.py`.
+- **Correlation Ranking Plot**: `plot_feature_correlation_ranking` horizontal bar chart in `visualizer.py`.
+- **KS Residual Normality Test**: Kolmogorov-Smirnov test in `residual_analyzer.py`.
+- **Conformal Interval Width Ratio**: `compute_relative_interval_width` in `conformal_predictor.py`.
+- **Cluster Centroids**: `get_cluster_centroids` calculation in `feature_clusterer.py`.
+- **Alert Breakdown by Severity**: `get_alert_counts_by_severity` in `drift_alerter.py`.
+- **Artifact Metadata Helper**: `get_artifact_metadata` in `model_serializer.py`.
+- **Thread & Process Telemetry**: `get_process_thread_info` helper in `system_health.py`.
+- **Annual Cloud Cost Projections**: `project_annual_cloud_cost` in `cost_analyzer.py`.
+- **HTML Sanitization**: `strip_html_tags` text sanitization in `data_cleaner.py`.
+- **Population Stability Index (PSI)**: `calculate_population_stability_index` in `distribution_drift.py`.
+- **Slice Query Filtering**: `filter_by_slice` helper in `data_slice_miner.py`.
+- **Uncertainty Normalization**: `normalize_uncertainty_scores` in `uncertainty_estimator.py`.
+- **Checkpoint Cache Management**: `clear_checkpoints` in `pipeline_checkpoint.py`.
+- **Multi-Region Cost Sizing**: Multi-region cost latency multipliers in `cloud_cost_optimizer.py`.
+- **Decision Tree Rule Export**: `export_decision_tree_rules` extractor in `model_rule_exporter.py`.
+- **Column Type Validation**: `validate_column_types` schema checker in `validator.py`.
+- **1-Cycle Learning Rate**: `one_cycle_lr` schedule in `learning_rate_scheduler.py`.
+
+---
+
 ## [2.4.0] — 2026-10-01
 
 ### Added
