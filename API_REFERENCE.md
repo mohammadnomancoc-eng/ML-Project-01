@@ -97,7 +97,19 @@ Performs real-time single-sample regression inference.
 | `uncertainty_estimator.py` | `EnsembleUncertaintyEstimator` | Tree variance and epistemic uncertainty bounds |
 | `pipeline_checkpoint.py` | `PipelineCheckpointManager` | Intermediate pipeline state snapshot caching |
 | `residual_analyzer.py` | `ResidualDiagnosticAnalyzer` | Durbin-Watson and heteroscedasticity diagnostic checks |
-| `cloud_cost_optimizer.py` | `CloudCostOptimizer` | Latency SLA instance sizing and cost optimizer |
 | `feature_selector_v2.py` | `RecursiveFeatureSelector` | RFECV recursive feature elimination with cross-validation |
 | `model_rule_exporter.py` | `ModelRuleExporter` | Portable model formula and rule extraction |
+
+---
+
+## ⚡ Recent Extensions (v2.5.0)
+
+- **`DataPreprocessor.clip_extreme_quantiles`**: Clips outliers to arbitrary quantiles.
+- **`FeatureEngineer(scaling_method="quantile")`**: Added quantile uniform distribution scaling.
+- **`ModelEvaluator.evaluate_model`**: Added Symmetric Mean Absolute Percentage Error (`smape`).
+- **`relative_squared_error`**: Normalized sum-of-squares error loss function.
+- **`DistributionDriftEstimator.calculate_population_stability_index`**: Full Population Stability Index (PSI) support.
+- **`LRScheduler.one_cycle_lr`**: 1-Cycle learning rate schedule generation with warmup and cosine decay.
+- **`CloudCostOptimizer.estimate_multiregion_cost`**: Multi-region cloud infrastructure cost multipliers.
+
 
