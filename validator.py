@@ -77,3 +77,17 @@ class DataFrameValidator:
             return [f"Missing required columns: {missing}"]
         return []
 
+    @staticmethod
+    def validate_column_types(df, expected_types: dict) -> List[str]:
+        """Verifies that DataFrame column data types match expected schema."""
+        violations = []
+        for col, exp_type in expected_types.items():
+            if col in df.columns:
+                actual_dtype = str(df[col].dtype)
+                if exp_type == "numeric" and not (df[col].dtype.kind in "biufc"):
+                    violations.append(f"Column '{col}' expected numeric type, got {actual_dtype}")
+                elif exp_type == "string" and df[col].dtype.kind not in "OSU":
+                    violations.append(f"Column '{col}' expected string/object type, got {actual_dtype}")
+        return violations
+
+
