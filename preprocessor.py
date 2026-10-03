@@ -81,3 +81,11 @@ class DataPreprocessor(BaseEstimator, TransformerMixin):
                 X[col] = X[col].fillna(mode_val)
 
         return X
+
+    @staticmethod
+    def clip_extreme_quantiles(series: pd.Series, lower_q: float = 0.01, upper_q: float = 0.99) -> pd.Series:
+        """Clips a series to extreme lower and upper quantile thresholds."""
+        low_val = series.quantile(lower_q)
+        high_val = series.quantile(upper_q)
+        return series.clip(lower=low_val, upper=high_val)
+
