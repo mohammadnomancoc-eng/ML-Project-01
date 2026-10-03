@@ -51,3 +51,11 @@ class DataSliceMiner:
         top_slices = slice_candidates[:top_k]
         logger.info(f"Mined {len(top_slices)} worst error cohort slices.")
         return top_slices
+
+    @staticmethod
+    def filter_by_slice(df: pd.DataFrame, feature: str, slice_value: Any) -> pd.DataFrame:
+        """Filters DataFrame matching specific slice condition."""
+        if feature not in df.columns:
+            raise KeyError(f"Feature '{feature}' not present in dataframe.")
+        return df[df[feature].astype(str) == str(slice_value)].copy()
+
