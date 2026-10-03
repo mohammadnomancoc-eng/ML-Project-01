@@ -63,4 +63,11 @@ def smooth_l1_loss(y_true: np.ndarray, y_pred: np.ndarray, beta: float = 1.0) ->
     return float(np.mean(loss))
 
 
+def relative_squared_error(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Computes Relative Squared Error (RSE) normalized by target variance."""
+    numerator = np.sum((y_true - y_pred) ** 2)
+    denominator = np.sum((y_true - np.mean(y_true)) ** 2)
+    return float(numerator / (denominator + 1e-8))
+
+
 
