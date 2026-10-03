@@ -45,6 +45,13 @@ class DataLoader:
         return df
 
     @staticmethod
+    def generate_correlated_features(df: pd.DataFrame, base_col: str, correlation: float = 0.85, noise_scale: float = 0.1) -> pd.Series:
+        """Synthesizes a new continuous feature with controlled correlation to an existing column."""
+        base_vals = df[base_col].values
+        noise = np.random.normal(0, noise_scale, size=len(df))
+        return pd.Series(correlation * base_vals + (1 - correlation) * noise, index=df.index)
+
+    @staticmethod
     def load_data(file_path: str) -> pd.DataFrame:
         """Loads data from a CSV file."""
         logger.info(f"Loading dataset from {file_path}")
