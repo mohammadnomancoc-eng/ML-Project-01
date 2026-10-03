@@ -18,6 +18,16 @@ class PathConfig:
         for directory in [self.DATA_DIR, self.MODELS_DIR, self.OUTPUT_DIR, self.LOGS_DIR]:
             directory.mkdir(parents=True, exist_ok=True)
 
+    def get_summary(self) -> Dict[str, str]:
+        """Returns string representation of all configured filesystem directories."""
+        return {
+            "base_dir": str(self.BASE_DIR),
+            "data_dir": str(self.DATA_DIR),
+            "models_dir": str(self.MODELS_DIR),
+            "outputs_dir": str(self.OUTPUT_DIR),
+            "logs_dir": str(self.LOGS_DIR),
+        }
+
 
 @dataclass
 class ModelConfig:
