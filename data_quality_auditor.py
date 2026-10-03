@@ -14,7 +14,7 @@ class DataQualityAuditor:
     """Computes comprehensive health scores and quality diagnostics for datasets."""
 
     @staticmethod
-    def audit_quality(df: pd.DataFrame, max_null_threshold: float = 0.25) -> Dict[str, Any]:
+    def audit_quality(df: pd.DataFrame, max_null_threshold: float = 0.25, skew_threshold: float = 3.0) -> Dict[str, Any]:
         """Calculates completeness score, column anomalies, and overall dataset health."""
         n_rows, n_cols = df.shape
         total_cells = n_rows * n_cols
@@ -47,6 +47,13 @@ class DataQualityAuditor:
                 col_info["infinite_count"] = infs
                 if infs > 0:
                     anomalies.append(f"Column '{col}' contains {infs} infinite values.")
+                
+                clean_num = series.dropna().replace([np.inf, -np.inf], np.nan).dropna()
+                if len(clean_num) > 2 and clean_num.std() > 0:
+                    skew_val = float(clean_num.skew())
+                    col_info["skewness"] = round(skew_val, 3)
+                    if abs(skew_val) > skew_threshold:
+                        anomalies.append(f"Column '{col}' is heavily skewed (|skew|={abs(skew_val):.2f} > {skew_threshold}).")
 
             if null_ratio > max_null_threshold:
                 anomalies.append(f"Column '{col}' exceeds null threshold ({null_ratio:.1%} > {max_null_threshold:.1%}).")
