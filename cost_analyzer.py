@@ -71,3 +71,15 @@ class BusinessCostAnalyzer:
             "carbon_offset_cost_usd": round(co2_emissions_kg * 0.02, 4),
         }
 
+    @staticmethod
+    def project_annual_cloud_cost(monthly_cost_usd: float, annual_growth_rate: float = 0.15) -> Dict[str, float]:
+        """Projects annual cloud infrastructure cost with compound annual traffic growth."""
+        base_annual = monthly_cost_usd * 12
+        projected_annual = base_annual * (1.0 + annual_growth_rate)
+        return {
+            "base_annual_cost_usd": round(base_annual, 2),
+            "projected_next_year_usd": round(projected_annual, 2),
+            "projected_monthly_avg_usd": round(projected_annual / 12, 2),
+        }
+
+
