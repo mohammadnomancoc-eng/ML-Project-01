@@ -23,9 +23,11 @@ class ResidualDiagnosticAnalyzer:
         diff_residuals = np.diff(residuals)
         dw_stat = float(np.sum(diff_residuals ** 2) / (np.sum(residuals ** 2) + 1e-8))
 
-        # 2. Shapiro-Wilk or skewness normality check
+        # 2. Shapiro-Wilk / KS normality check
         skewness = float(stats.skew(residuals))
         kurtosis = float(stats.kurtosis(residuals))
+        std_residuals = (residuals - np.mean(residuals)) / (np.std(residuals) + 1e-8)
+        ks_stat, ks_pvalue = stats.kstest(std_residuals, 'norm')
 
         # 3. Residual correlation with predicted values (Heteroscedasticity check)
         abs_res = np.abs(residuals)
@@ -36,11 +38,13 @@ class ResidualDiagnosticAnalyzer:
             "autocorrelation_status": "NONE" if 1.5 <= dw_stat <= 2.5 else "DETECTED",
             "residual_skewness": round(skewness, 4),
             "residual_kurtosis": round(kurtosis, 4),
+            "ks_normality_stat": round(float(ks_stat), 4),
+            "ks_normality_pvalue": round(float(ks_pvalue), 4),
             "heteroscedasticity_correlation": round(hetero_corr, 4),
             "is_homoscedastic": abs(hetero_corr) < 0.20,
         }
 
-        logger.info(f"Residual Diagnostics: DW={dw_stat:.2f}, Skew={skewness:.2f}, Heteroscedasticity Corr={hetero_corr:.2f}")
+        logger.info(f"Residual Diagnostics: DW={dw_stat:.2f}, Skew={skewness:.2f}, KS-p={ks_pvalue:.4f}, Hetero Corr={hetero_corr:.2f}")
         return results
 
     @staticmethod
