@@ -35,3 +35,13 @@ class PipelineCheckpointManager:
     def has_checkpoint(self, stage_name: str) -> bool:
         """Returns True if stage checkpoint exists on disk."""
         return (self.checkpoint_dir / f"checkpoint_{stage_name}.parquet").exists()
+
+    def clear_checkpoints(self) -> int:
+        """Deletes all cached parquet checkpoint files and returns count removed."""
+        count = 0
+        for f in self.checkpoint_dir.glob("checkpoint_*.parquet"):
+            f.unlink()
+            count += 1
+        logger.info(f"Cleared {count} stage checkpoint files from {self.checkpoint_dir}.")
+        return count
+
