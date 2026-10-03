@@ -80,3 +80,12 @@ class ConformalPredictor:
             "alpha_significance": self.alpha,
             "margin_error_bound": self.quantile_residual_,
         }
+
+    def compute_relative_interval_width(self, y_true: np.ndarray) -> float:
+        """Computes ratio of conformal interval width to target standard deviation."""
+        target_std = float(np.std(y_true))
+        if target_std <= 0:
+            return 0.0
+        width = 2 * self.quantile_residual_
+        return round(float(width / target_std), 4)
+
