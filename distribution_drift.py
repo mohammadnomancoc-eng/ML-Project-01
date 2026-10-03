@@ -49,3 +49,28 @@ class DistributionDriftEstimator:
             "flagged_features": flagged,
             "feature_metrics": results,
         }
+
+    @staticmethod
+    def calculate_population_stability_index(
+        reference: np.ndarray, current: np.ndarray, bins: int = 10
+    ) -> float:
+        """Computes Population Stability Index (PSI) between reference and current samples."""
+        ref = np.asarray(reference).ravel()
+        curr = np.asarray(current).ravel()
+        if len(ref) == 0 or len(curr) == 0:
+            return 0.0
+
+        quantiles = np.linspace(0, 100, bins + 1)
+        bin_edges = np.percentile(ref, quantiles)
+        bin_edges[0] -= 1e-5
+        bin_edges[-1] += 1e-5
+
+        ref_counts, _ = np.histogram(ref, bins=bin_edges)
+        curr_counts, _ = np.histogram(curr, bins=bin_edges)
+
+        ref_pct = (ref_counts + 1e-5) / (len(ref) + 1e-5 * bins)
+        curr_pct = (curr_counts + 1e-5) / (len(curr) + 1e-5 * bins)
+
+        psi_val = np.sum((curr_pct - ref_pct) * np.log(curr_pct / ref_pct))
+        return round(float(psi_val), 4)
+
