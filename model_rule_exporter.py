@@ -33,3 +33,30 @@ class ModelRuleExporter:
 
         logger.info(f"Exported {model_name} linear rules with {len(coefs)} features.")
         return export_data
+
+    @staticmethod
+    def export_decision_tree_rules(tree_model: Any, feature_names: List[str]) -> List[Dict[str, Any]]:
+        """Extracts decision tree node split rules and threshold values into structured list."""
+        if not hasattr(tree_model, "tree_"):
+            raise ValueError("Model does not contain decision tree structure ('tree_').")
+        
+        tree = tree_model.tree_
+        nodes = []
+        for i in range(tree.node_count):
+            if tree.feature[i] >= 0:
+                nodes.append({
+                    "node_id": i,
+                    "type": "split",
+                    "feature": feature_names[tree.feature[i]] if tree.feature[i] < len(feature_names) else f"feature_{tree.feature[i]}",
+                    "threshold": round(float(tree.threshold[i]), 6),
+                    "left_child": int(tree.children_left[i]),
+                    "right_child": int(tree.children_right[i]),
+                })
+            else:
+                nodes.append({
+                    "node_id": i,
+                    "type": "leaf",
+                    "value": round(float(tree.value[i][0][0]), 6),
+                })
+        return nodes
+
