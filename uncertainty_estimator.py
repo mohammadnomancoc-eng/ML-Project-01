@@ -34,3 +34,13 @@ class EnsembleUncertaintyEstimator:
 
         logger.info(f"Uncertainty estimation computed across {len(ensemble_model.estimators_)} trees for {len(X)} samples.")
         return df_out
+
+    @staticmethod
+    def normalize_uncertainty_scores(std_series: pd.Series) -> pd.Series:
+        """Min-max normalizes standard deviation scores into a 0.0-1.0 confidence penalty score."""
+        s_min = std_series.min()
+        s_max = std_series.max()
+        if s_max - s_min < 1e-8:
+            return pd.Series(0.0, index=std_series.index)
+        return (std_series - s_min) / (s_max - s_min)
+
