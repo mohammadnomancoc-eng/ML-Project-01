@@ -18,6 +18,7 @@ class DataSanitizer:
         "credit_card": r"\b(?:\d{4}[-\s]?){3}\d{4}\b",
         "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
         "ip_address": r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b",
+        "ipv6": r"\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b",
         "phone_number": r"\b(?:\+?\d{1,3}[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}\b",
         "passport": r"\b[A-Z]{1,2}[0-9]{6,9}\b",
     }
