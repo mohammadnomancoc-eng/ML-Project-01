@@ -65,3 +65,13 @@ class ModelSerializer:
     def artifact_exists(filename: str) -> bool:
         """Checks if artifact file exists in models directory."""
         return (paths.MODELS_DIR / filename).exists()
+
+    @staticmethod
+    def get_artifact_metadata(filename: str) -> Optional[Dict[str, Any]]:
+        """Reads metadata JSON companion file if it exists."""
+        meta_path = (paths.MODELS_DIR / filename).with_suffix(".json")
+        if not meta_path.exists():
+            return None
+        with open(meta_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
