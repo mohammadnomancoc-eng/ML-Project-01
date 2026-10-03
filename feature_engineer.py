@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 from typing import List, Optional
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, PowerTransformer, OneHotEncoder, PolynomialFeatures
+from sklearn.preprocessing import (
+    StandardScaler, MinMaxScaler, RobustScaler, PowerTransformer, OneHotEncoder, PolynomialFeatures, QuantileTransformer
+)
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from config import config
@@ -27,6 +29,8 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
             return RobustScaler()
         elif self.scaling_method == "power":
             return PowerTransformer(method="yeo-johnson")
+        elif self.scaling_method == "quantile":
+            return QuantileTransformer(output_distribution="uniform", random_state=42)
         return StandardScaler()
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
