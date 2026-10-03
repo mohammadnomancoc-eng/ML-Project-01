@@ -79,7 +79,14 @@ class EarlyStopping:
             "best_score": self.best_score,
             "current_epoch": self.current_epoch,
             "counter": self.counter,
+            "patience_remaining": self.patience_remaining,
             "early_stop_triggered": self.early_stop,
             "has_best_weights": self.best_weights is not None,
         }
+
+    @property
+    def patience_remaining(self) -> int:
+        """Returns the number of remaining patience epochs before trigger."""
+        return max(0, self.patience - self.counter)
+
 
