@@ -61,3 +61,15 @@ class MetricTracker:
         df = pd.DataFrame(dict(self.history))
         df.to_csv(file_path, index_label="step")
 
+    def compute_exponential_variance(self, metric_name: str) -> float:
+        """Computes exponential moving variance of a specific tracked metric."""
+        values = self.history.get(metric_name, [])
+        if len(values) < 2:
+            return 0.0
+        ema = self.ema_values.get(metric_name, np.mean(values))
+        diff_sq = [(v - ema) ** 2 for v in values]
+        var_ema = diff_sq[0]
+        for v in diff_sq[1:]:
+            var_ema = self.ema_alpha * v + (1 - self.ema_alpha) * var_ema
+        return round(float(var_ema), 6)
+
