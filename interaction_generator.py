@@ -77,3 +77,8 @@ class FeatureInteractionGenerator:
 
         interactions_df = pd.DataFrame(new_features, index=df_out.index)
         return pd.concat([df_out, interactions_df], axis=1)
+
+    def get_generated_feature_names(self) -> List[str]:
+        """Returns list of created interaction column names."""
+        return self.generated_columns.copy()
+
