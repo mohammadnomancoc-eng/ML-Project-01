@@ -93,3 +93,16 @@ class DataSampler:
         sampled = df.iloc[indices].reset_index(drop=True)
         logger.info(f"Systematic sampling extracted {len(sampled)} rows (step={step_size}).")
         return sampled
+
+    @staticmethod
+    def get_sampling_stats(original_df: pd.DataFrame, sampled_df: pd.DataFrame) -> dict:
+        """Calculates sampling ratio and dimension retention stats."""
+        orig_len = len(original_df)
+        sampled_len = len(sampled_df)
+        return {
+            "original_rows": orig_len,
+            "sampled_rows": sampled_len,
+            "sampling_ratio": round(sampled_len / max(1, orig_len), 4),
+            "columns_retained": sampled_df.shape[1],
+        }
+
