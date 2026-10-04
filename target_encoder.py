@@ -70,3 +70,8 @@ class OutOfFoldTargetEncoder:
             if col in df_out.columns:
                 df_out[f"{col}_target_enc"] = df_out[col].map(mapping).fillna(self.global_mean_)
         return df_out
+
+    def get_feature_encoding_map(self, column: str) -> Optional[Dict[str, float]]:
+        """Returns the dictionary mapping categories to smoothed target mean for a given column."""
+        return self.category_mappings_.get(column, None)
+
