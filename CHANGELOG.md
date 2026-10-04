@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.6.0] — 2026-10-04
+
+### Added
+- **Environment Telemetry**: `get_environment_info` helper in `config.py`.
+- **Sampling Stats Reporter**: `get_sampling_stats` ratio helper in `data_sampler.py`.
+- **Imputation Pipeline Summary**: `get_imputation_summary` in `missing_value_handler.py`.
+- **Hash Collision Estimator**: `estimate_collision_rate` helper in `feature_hash_encoder.py`.
+- **Target Encoding Map Accessor**: `get_feature_encoding_map` in `target_encoder.py`.
+- **Interaction Column Inspector**: `get_generated_feature_names` in `interaction_generator.py`.
+- **Brier Score Calculation**: `brier_score` evaluation metric in `model_calibrator.py`.
+- **Cost Curve Trajectory Generator**: `generate_cost_curve` in `threshold_optimizer.py`.
+- **Extended Test Suite V6**: Unit tests for sampling, hashing, calibration, and encoder helpers.
+
+---
+
 ## [2.5.0] — 2026-10-03
 
 ### Added
