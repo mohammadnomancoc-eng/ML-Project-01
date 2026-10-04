@@ -55,3 +55,16 @@ class FeatureHashEncoder:
     def fit_transform(self, df: pd.DataFrame, categorical_cols: Optional[List[str]] = None) -> pd.DataFrame:
         """Fits encoder (stateless) and transforms DataFrame."""
         return self.transform(df, categorical_cols)
+
+    def estimate_collision_rate(self, tokens: List[str]) -> float:
+        """Estimates empirical hash bucket collision rate for a set of string tokens."""
+        if not tokens:
+            return 0.0
+        buckets = [self._hash_token(t)[0] for t in tokens]
+        unique_tokens = len(set(tokens))
+        unique_buckets = len(set(buckets))
+        if unique_tokens <= 1:
+            return 0.0
+        collision_count = unique_tokens - unique_buckets
+        return round(float(collision_count / unique_tokens), 4)
+
