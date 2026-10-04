@@ -64,7 +64,30 @@ class TestExtendedSuiteV3(unittest.TestCase):
         reg_costs = CloudCostOptimizer.estimate_multiregion_cost(100.0, ["us-east-1", "eu-west-1"])
         self.assertIn("total_multiregion_usd", reg_costs)
 
+    def test_v2_6_helpers(self):
+        from data_sampler import DataSampler
+        from feature_hash_encoder import FeatureHashEncoder
+        from model_calibrator import ModelCalibrator
+        from threshold_optimizer import ThresholdOptimizer
+
+        orig = pd.DataFrame({"a": [1, 2, 3, 4, 5]})
+        samp = pd.DataFrame({"a": [1, 2]})
+        stats = DataSampler.get_sampling_stats(orig, samp)
+        self.assertEqual(stats["original_rows"], 5)
+        self.assertEqual(stats["sampled_rows"], 2)
+
+        hasher = FeatureHashEncoder(n_features=8)
+        c_rate = hasher.estimate_collision_rate(["feat_a", "feat_b", "feat_c"])
+        self.assertIsInstance(c_rate, float)
+
+        brier = ModelCalibrator.brier_score(np.array([1, 0, 1]), np.array([0.9, 0.1, 0.8]))
+        self.assertLess(brier, 0.1)
+
+        curve = ThresholdOptimizer.generate_cost_curve(np.array([1, 0, 1]), np.array([0.9, 0.1, 0.8]), n_points=5)
+        self.assertEqual(len(curve), 5)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
