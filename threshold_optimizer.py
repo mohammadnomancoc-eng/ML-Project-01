@@ -88,3 +88,26 @@ class ThresholdOptimizer:
             "cost_fp": cost_fp,
             "cost_fn": cost_fn,
         }
+
+    @staticmethod
+    def generate_cost_curve(
+        y_true: np.ndarray,
+        y_probs: np.ndarray,
+        cost_fp: float = 10.0,
+        cost_fn: float = 50.0,
+        n_points: int = 20,
+    ) -> List[Dict[str, float]]:
+        """Generates cost evaluation trajectory across varying decision threshold values."""
+        thresholds = np.linspace(0.05, 0.95, n_points)
+        curve = []
+        y_true = np.asarray(y_true)
+        y_probs = np.asarray(y_probs)
+
+        for thresh in thresholds:
+            preds = (y_probs >= thresh).astype(int)
+            fp = np.sum((y_true == 0) & (preds == 1))
+            fn = np.sum((y_true == 1) & (preds == 0))
+            cost = (fp * cost_fp) + (fn * cost_fn)
+            curve.append({"threshold": round(float(thresh), 3), "cost": round(float(cost), 2)})
+        return curve
+
