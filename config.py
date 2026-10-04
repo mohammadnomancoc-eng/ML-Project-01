@@ -105,3 +105,16 @@ def set_seed(seed: int = 42) -> None:
     np.random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
 
+
+def get_environment_info() -> Dict[str, Any]:
+    """Returns comprehensive environment variables and runtime configuration."""
+    return {
+        "random_state": config.RANDOM_STATE,
+        "n_samples": config.N_SAMPLES,
+        "n_features": config.N_FEATURES,
+        "scaling_method": config.SCALING_METHOD,
+        "base_directory": str(paths.BASE_DIR),
+        "target_column": config.TARGET_COLUMN,
+    }
+
+
