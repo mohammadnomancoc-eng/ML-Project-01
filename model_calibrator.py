@@ -67,3 +67,12 @@ class ModelCalibrator:
                 ece += (bin_size / n_total) * abs(acc_in_bin - conf_in_bin)
 
         return round(float(ece), 4)
+
+    @staticmethod
+    def brier_score(y_true: np.ndarray, y_probs: np.ndarray) -> float:
+        """Calculates Brier Score (mean squared error of calibrated probabilities)."""
+        y_true = np.asarray(y_true).ravel()
+        y_probs = np.asarray(y_probs).ravel()
+        score = np.mean((y_probs - y_true) ** 2)
+        return round(float(score), 4)
+
