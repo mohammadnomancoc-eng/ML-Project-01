@@ -86,3 +86,13 @@ class MissingValueHandler:
         """Imputes missing values in time-series / sequential series using rolling forward/backward means."""
         rolling_mean = series.rolling(window=window, min_periods=min_periods, center=True).mean()
         return series.fillna(rolling_mean).bfill().ffill()
+
+    def get_imputation_summary(self) -> dict:
+        """Returns metadata summary of the fitted imputation pipeline."""
+        return {
+            "strategy": self.strategy,
+            "n_neighbors": self.n_neighbors,
+            "is_fitted": self.numeric_imputer is not None,
+            "feature_count": len(self.imputed_feature_names),
+        }
+
