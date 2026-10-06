@@ -84,3 +84,16 @@ class DataLeakageDetector:
             "overlap_audit": overlap_audit,
             "correlation_leak_audit": corr_audit,
         }
+
+    @staticmethod
+    def detect_duplicate_target_leakage(df: pd.DataFrame, target_column: str) -> List[str]:
+        """Identifies features that are exact duplicates of target column."""
+        if target_column not in df.columns:
+            return []
+        target_series = df[target_column]
+        duplicate_cols = []
+        for col in df.columns:
+            if col != target_column and df[col].equals(target_series):
+                duplicate_cols.append(col)
+        return duplicate_cols
+
