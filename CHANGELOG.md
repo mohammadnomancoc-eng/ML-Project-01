@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.7.0] — 2026-10-06
+
+### Added
+- **Temporal Drift Synthesis**: `add_temporal_trend` method in `data_loader.py`.
+- **Quantile Fingerprinting**: `compute_quantile_fingerprint` in `dataset_fingerprint.py`.
+- **Target Duplicate Auditor**: `detect_duplicate_target_leakage` in `leakage_detector.py`.
+- **Streaming Drift Reporter**: `get_drift_status_summary` in `concept_drift_detector.py`.
+- **Equity Disparity Metric**: `compute_equity_disparity_score` in `subgroup_auditor.py`.
+- **Noise Sensitivity Profiler**: `evaluate_noise_sensitivity_curve` in `adversarial_tester.py`.
+- **Stage Version Filtering**: `list_registered_versions_by_stage` in `model_registry.py`.
+- **Lineage Provenance Summary**: `get_provenance_graph_summary` in `model_lineage.py`.
+- **Counterfactual Delta Metrics**: `get_counterfactual_delta_summary` in `counterfactual_explainer.py`.
+- **Top-K Shapley Filter**: `get_top_k_attributions` in `shap_approximator.py`.
+- **Bayesian Trajectory Tracker**: `get_convergence_trajectory` in `bayesian_optimizer.py`.
+- **Copula Correlation Score**: `get_correlation_similarity_score` in `tabular_synthesizer.py`.
+- **Weight Clamping Utility**: `clip_extreme_weights` in `sample_weigher.py`.
+- **Extended Test Suite V7**: Comprehensive unit tests for analytical and diagnostic helpers.
+
+---
+
 ## [2.6.0] — 2026-10-04
 
 ### Added
