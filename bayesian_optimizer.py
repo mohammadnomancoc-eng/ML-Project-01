@@ -89,3 +89,15 @@ class BayesianHyperparameterOptimizer:
             "best_score": round(float(best_score), 4),
             "n_iterations": len(self.y_history),
         }
+
+    def get_convergence_trajectory(self) -> List[float]:
+        """Returns the running maximum objective score achieved at each iteration step."""
+        if not self.y_history:
+            return []
+        running_max = []
+        cur_max = float("-inf")
+        for score in self.y_history:
+            cur_max = max(cur_max, score)
+            running_max.append(round(float(cur_max), 4))
+        return running_max
+
