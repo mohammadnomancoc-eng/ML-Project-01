@@ -72,3 +72,17 @@ class DatasetFingerprinter:
             "columns_added": cols_added,
             "columns_removed": cols_removed,
         }
+
+    @staticmethod
+    def compute_quantile_fingerprint(df: pd.DataFrame, quantiles: Optional[List[float]] = None) -> Dict[str, Dict[str, float]]:
+        """Calculates exact quantile signatures for numeric features."""
+        if quantiles is None:
+            quantiles = [0.1, 0.25, 0.5, 0.75, 0.9]
+        numeric_df = df.select_dtypes(include=[np.number])
+        q_fingerprints = {}
+        for col in numeric_df.columns:
+            series = numeric_df[col].dropna()
+            if not series.empty:
+                q_fingerprints[col] = {f"q_{int(q*100)}": round(float(series.quantile(q)), 4) for q in quantiles}
+        return q_fingerprints
+
