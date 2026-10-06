@@ -72,3 +72,14 @@ class SubgroupAuditor:
                     flagged_slices.append(entry)
 
         return flagged_slices
+
+    @staticmethod
+    def compute_equity_disparity_score(subgroup_audit_results: List[Dict[str, Any]]) -> float:
+        """Calculates ratio of max slice MAE to min slice MAE (1.0 = perfect equity)."""
+        if not subgroup_audit_results:
+            return 1.0
+        maes = [entry["mae"] for entry in subgroup_audit_results if entry.get("mae", 0) > 0]
+        if not maes:
+            return 1.0
+        return round(float(max(maes) / max(1e-8, min(maes))), 4)
+
