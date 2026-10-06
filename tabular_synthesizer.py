@@ -81,3 +81,19 @@ class TabularCopulaSynthesizer:
         sampled_df = pd.DataFrame(synthetic_dict)
         logger.info(f"Synthesized {n_samples} high-fidelity tabular rows with shape {sampled_df.shape}.")
         return sampled_df
+
+    @staticmethod
+    def get_correlation_similarity_score(original_df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
+        """Computes Frobenius norm similarity between empirical correlation matrices (0.0 to 1.0)."""
+        num_orig = original_df.select_dtypes(include=[np.number])
+        num_synth = synthetic_df.select_dtypes(include=[np.number])
+        shared_cols = list(set(num_orig.columns).intersection(num_synth.columns))
+        if len(shared_cols) < 2:
+            return 1.0
+        corr1 = num_orig[shared_cols].corr().fillna(0).values
+        corr2 = num_synth[shared_cols].corr().fillna(0).values
+        diff_norm = np.linalg.norm(corr1 - corr2, ord="fro")
+        max_possible = np.sqrt(len(shared_cols) * len(shared_cols) * 4)
+        similarity = 1.0 - (diff_norm / max_possible)
+        return round(float(np.clip(similarity, 0.0, 1.0)), 4)
+
