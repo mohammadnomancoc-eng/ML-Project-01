@@ -103,3 +103,11 @@ class ModelRegistry:
             if entry.get("stage") == "Production":
                 return ModelSerializer.load_artifact(entry["artifact_filename"])
         return None
+
+    def list_registered_versions_by_stage(self, model_name: str, stage: str) -> List[Dict[str, Any]]:
+        """Returns all versions matching a specific lifecycle stage."""
+        manifest = self._load_manifest()
+        if model_name not in manifest["models"]:
+            return []
+        return [entry for entry in manifest["models"][model_name] if entry.get("stage", "").lower() == stage.lower()]
+
