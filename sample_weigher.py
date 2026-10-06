@@ -52,3 +52,10 @@ class SampleWeigher:
 
         weights = np.where(z_scores <= threshold_std, 1.0, threshold_std / (z_scores + 1e-8))
         return weights / np.mean(weights)
+
+    @staticmethod
+    def clip_extreme_weights(weights: np.ndarray, min_weight: float = 0.1, max_weight: float = 10.0) -> np.ndarray:
+        """Clips sample weights into reasonable bounds and re-normalizes mean to 1.0."""
+        clipped = np.clip(weights, min_weight, max_weight)
+        return clipped / (np.mean(clipped) + 1e-8)
+
