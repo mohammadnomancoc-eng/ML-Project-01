@@ -84,3 +84,16 @@ class CounterfactualExplainer:
             "achieved_prediction": round(final_pred, 4),
             "modified_features": changes,
         }
+
+    @staticmethod
+    def get_counterfactual_delta_summary(explanation: Dict[str, Any]) -> Dict[str, float]:
+        """Summarizes relative and absolute prediction changes achieved by counterfactual."""
+        initial = explanation.get("initial_prediction", 0.0)
+        achieved = explanation.get("achieved_prediction", 0.0)
+        delta = achieved - initial
+        return {
+            "absolute_delta": round(float(delta), 4),
+            "percent_change": round(float((delta / max(1e-8, abs(initial))) * 100), 2),
+            "features_perturbed_count": len(explanation.get("modified_features", {})),
+        }
+
