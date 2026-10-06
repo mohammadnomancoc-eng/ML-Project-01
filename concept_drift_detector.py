@@ -90,3 +90,14 @@ class ConceptDriftDetector:
             "mae_degradation_ratio": round(mae_ratio, 4),
             "drift_status": "CRITICAL_DRIFT" if len(drift_events) > 0 else "STABLE",
         }
+
+    def get_drift_status_summary(self) -> Dict[str, Any]:
+        """Returns current tracking status and drift event summary."""
+        return {
+            "n_samples_processed": self.n_samples,
+            "total_drift_events": len(self.drift_detected_indices),
+            "current_error_mean": round(float(self.mean), 4),
+            "threshold": self.threshold,
+            "is_drifting": len(self.drift_detected_indices) > 0,
+        }
+
