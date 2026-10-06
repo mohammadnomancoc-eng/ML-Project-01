@@ -67,3 +67,9 @@ class AdversarialRobustnessTester:
         sorted_impacts = dict(sorted(feature_impacts.items(), key=lambda item: item[1], reverse=True))
         logger.info(f"Feature dropout stress test completed for {len(sorted_impacts)} features.")
         return sorted_impacts
+
+    def evaluate_noise_sensitivity_curve(self, start: float = 0.0, end: float = 0.5, steps: int = 10) -> List[Dict[str, float]]:
+        """Generates fine-grained perturbation curve across uniform noise intervals."""
+        noise_levels = list(np.linspace(start, end, steps))
+        return self.evaluate_gaussian_noise_robustness(noise_levels)
+
