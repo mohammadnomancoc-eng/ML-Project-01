@@ -86,8 +86,29 @@ class TestExtendedSuiteV3(unittest.TestCase):
         curve = ThresholdOptimizer.generate_cost_curve(np.array([1, 0, 1]), np.array([0.9, 0.1, 0.8]), n_points=5)
         self.assertEqual(len(curve), 5)
 
+    def test_v2_7_helpers(self):
+        from dataset_fingerprint import DatasetFingerprinter
+        from leakage_detector import DataLeakageDetector
+        from sample_weigher import SampleWeigher
+        from tabular_synthesizer import TabularCopulaSynthesizer
+
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0], "target": [10.0, 20.0, 30.0, 40.0, 50.0]})
+        q_fp = DatasetFingerprinter.compute_quantile_fingerprint(df)
+        self.assertIn("x", q_fp)
+
+        dup_leak = DataLeakageDetector.detect_duplicate_target_leakage(df, "target")
+        self.assertEqual(len(dup_leak), 0)
+
+        w = np.array([0.01, 1.0, 100.0])
+        w_clipped = SampleWeigher.clip_extreme_weights(w, 0.1, 10.0)
+        self.assertAlmostEqual(np.mean(w_clipped), 1.0, places=3)
+
+        sim = TabularCopulaSynthesizer.get_correlation_similarity_score(df, df)
+        self.assertEqual(sim, 1.0)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
 
