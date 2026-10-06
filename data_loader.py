@@ -102,3 +102,13 @@ class DataLoader:
         n = len(y)
         weights = np.exp(-decay_rate * np.arange(n)[::-1])
         return weights / np.mean(weights)
+
+    @staticmethod
+    def add_temporal_trend(df: pd.DataFrame, slope: float = 0.05, target_col: str = config.TARGET_COLUMN) -> pd.DataFrame:
+        """Injects linear temporal drift trend into target series."""
+        df_out = df.copy()
+        trend = np.linspace(0, slope * len(df_out), len(df_out))
+        if target_col in df_out.columns:
+            df_out[target_col] += trend
+        return df_out
+
