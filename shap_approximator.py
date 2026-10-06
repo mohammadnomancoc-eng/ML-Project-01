@@ -74,3 +74,10 @@ class ShapleyApproximator:
             for feat, val in sorted(zip(self.feature_names, mean_abs_shaps), key=lambda x: x[1], reverse=True)
         }
         return global_importance
+
+    @staticmethod
+    def get_top_k_attributions(attributions: Dict[str, float], top_k: int = 3) -> Dict[str, float]:
+        """Filters attribution dictionary to the top-K highest absolute magnitude features."""
+        sorted_feats = sorted(attributions.items(), key=lambda x: abs(x[1]), reverse=True)
+        return dict(sorted_feats[:top_k])
+
