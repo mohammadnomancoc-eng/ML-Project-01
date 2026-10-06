@@ -72,3 +72,17 @@ class LineageTracker:
             json.dump(manifest, f, indent=4)
         logger.info(f"Lineage provenance graph saved with {len(self.nodes)} nodes to {self.LINEAGE_FILE}.")
         return manifest
+
+    def get_provenance_graph_summary(self) -> Dict[str, Any]:
+        """Returns node type counts and dependency edge statistics."""
+        type_counts = {}
+        for n in self.nodes:
+            nt = n.get("type", "unknown")
+            type_counts[nt] = type_counts.get(nt, 0) + 1
+        return {
+            "run_id": self.run_id,
+            "total_nodes": len(self.nodes),
+            "total_edges": len(self.edges),
+            "node_type_breakdown": type_counts,
+        }
+
