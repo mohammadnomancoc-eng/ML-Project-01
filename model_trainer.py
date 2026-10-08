@@ -57,3 +57,8 @@ class ModelTrainer:
             }
             for name, model in self.trained_models_.items()
         }
+
+    def get_total_training_duration(self) -> float:
+        """Returns the sum of training durations across all fitted algorithms."""
+        return round(float(sum(self.training_times_.values())), 4)
+
