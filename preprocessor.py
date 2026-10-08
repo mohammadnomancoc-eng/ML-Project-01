@@ -89,3 +89,8 @@ class DataPreprocessor(BaseEstimator, TransformerMixin):
         high_val = series.quantile(upper_q)
         return series.clip(lower=low_val, upper=high_val)
 
+    def get_feature_bounds_dict(self) -> Dict[str, tuple]:
+        """Returns the dictionary of learned IQR outlier bounds for each feature."""
+        return self.iqr_bounds_.copy()
+
+
