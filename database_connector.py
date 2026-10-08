@@ -1,4 +1,4 @@
-﻿"""Database Connection and SQL Data Ingestion Module."""
+"""Database Connection and SQL Data Ingestion Module."""
 
 import sqlite3
 from pathlib import Path
@@ -35,3 +35,12 @@ class DatabaseConnector:
         logger.info(f"Executing SQL query: {query}")
         with self._get_connection() as conn:
             return pd.read_sql_query(query, conn)
+
+    def check_table_exists(self, table_name: str) -> bool:
+        """Verifies whether specified table exists in the database."""
+        query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (table_name,))
+            return cursor.fetchone() is not None
+
