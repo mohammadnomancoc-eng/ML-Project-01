@@ -63,3 +63,13 @@ class ModelBenchmark:
         result = fn(*args, **kwargs)
         elapsed_ms = (time.perf_counter() - start) * 1000.0
         return {"result": result, "elapsed_ms": round(elapsed_ms, 3)}
+
+    @staticmethod
+    def compare_model_latencies(models_dict: Dict[str, Any], sample_data, n_runs: int = 50) -> Dict[str, float]:
+        """Compares mean inference latencies across multiple model predictors."""
+        latency_map = {}
+        for name, model in models_dict.items():
+            bench = ModelBenchmark.benchmark_latency(model.predict, sample_data, n_iterations=n_runs)
+            latency_map[name] = bench["mean_latency_ms"]
+        return dict(sorted(latency_map.items(), key=lambda x: x[1]))
+
