@@ -58,3 +58,13 @@ class ModelPredictor:
             "p99_latency_ms": round(float(np.percentile(latencies, 99)), 3),
             "mean_latency_ms": round(float(np.mean(latencies)), 3),
         }
+
+    def predict_with_confidence_intervals(self, df: pd.DataFrame, error_margin: float = 5.0) -> pd.DataFrame:
+        """Returns predictions with lower and upper confidence interval boundaries."""
+        preds = self.predict_batch(df)
+        return pd.DataFrame({
+            "prediction": preds,
+            "ci_lower": np.round(preds - error_margin, 4),
+            "ci_upper": np.round(preds + error_margin, 4),
+        })
+
