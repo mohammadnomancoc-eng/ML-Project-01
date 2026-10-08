@@ -65,3 +65,12 @@ class SyntheticAugmenter:
         logger.info(f"Injected {n_outliers} synthetic outlier values across {len(numeric_cols)} features.")
         return perturbed
 
+    def inject_missingness_spikes(self, df: pd.DataFrame, drop_ratio: float = 0.05) -> pd.DataFrame:
+        """Randomly injects null NaN values to simulate real-world missingness corruption."""
+        corrupted = df.copy()
+        mask = self.rng.rand(*corrupted.shape) < drop_ratio
+        for i, col in enumerate(corrupted.columns):
+            corrupted.loc[mask[:, i], col] = np.nan
+        return corrupted
+
+
