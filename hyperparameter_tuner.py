@@ -56,3 +56,14 @@ class HyperparameterTuner:
         self.best_scores_[model_name] = round(float(search.best_score_), 4)
         logger.info(f"[{model_name}] RandomSearch Best Score: {self.best_scores_[model_name]} | Params: {self.best_params_[model_name]}")
         return search.best_estimator_
+
+    def get_best_score_summary(self) -> Dict[str, Dict[str, Any]]:
+        """Returns consolidated score and parameter mapping for all tuned models."""
+        return {
+            name: {
+                "best_score": self.best_scores_.get(name),
+                "best_params": self.best_params_.get(name),
+            }
+            for name in self.best_params_
+        }
+
