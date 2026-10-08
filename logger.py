@@ -1,4 +1,4 @@
-﻿"""Structured Logging for Model Training and Pipeline Execution."""
+"""Structured Logging for Model Training and Pipeline Execution."""
 
 import logging
 import sys
@@ -37,3 +37,19 @@ def get_logger(name: str = "ML_Pipeline") -> logging.Logger:
 
 
 logger = get_logger()
+
+
+def log_execution_time(func):
+    """Decorator to measure and log function execution duration."""
+    import time
+    from functools import wraps
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        res = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        logger.info(f"Function '{func.__name__}' executed in {elapsed:.4f}s")
+        return res
+
+    return wrapper
