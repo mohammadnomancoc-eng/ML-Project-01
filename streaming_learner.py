@@ -67,3 +67,10 @@ class StreamingOnlineLearner:
         numeric_X = X.select_dtypes(include=[np.number]).fillna(0)
         scaled_X = self.scaler.transform(numeric_X)
         return self.model.predict(scaled_X)
+
+    def get_model_weights_vector(self) -> Optional[np.ndarray]:
+        """Returns the current online linear regression weights vector."""
+        if hasattr(self.model, "coef_"):
+            return self.model.coef_.copy()
+        return None
+
