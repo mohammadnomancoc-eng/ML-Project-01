@@ -47,3 +47,14 @@ class PipelineProfiler:
             )
         lines.append(f"| **Total Pipeline** | **{total_time:.4f}** | **{round(total_time * 1000, 2)}** | **100.0%** |")
         return "\n".join(lines)
+
+    def get_stage_percentage_breakdown(self) -> Dict[str, float]:
+        """Calculates exact runtime percentage share for each executed stage."""
+        total_time = sum(r["elapsed_seconds"] for r in self.records)
+        if total_time <= 0:
+            return {}
+        return {
+            r["stage"]: round((r["elapsed_seconds"] / total_time) * 100, 2)
+            for r in self.records
+        }
+
