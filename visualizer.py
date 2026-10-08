@@ -126,3 +126,21 @@ class MLVisualizer:
         logger.info(f"Saved feature correlation ranking to: {output_path}")
         return output_path
 
+    def plot_shap_importance_bar(
+        self, importance_dict: dict, filename: str = "shap_feature_importance.png"
+    ) -> Path:
+        """Plots horizontal bar chart ranking mean absolute Shapley feature values."""
+        plt.figure(figsize=(9, max(4, len(importance_dict) * 0.35)))
+        s = pd.Series(importance_dict).sort_values()
+        s.plot(kind="barh", color="#5CB85C")
+        plt.title("Shapley Global Feature Importance", fontsize=13)
+        plt.xlabel("Mean |SHAP Value|", fontsize=11)
+        plt.tight_layout()
+
+        output_path = paths.OUTPUT_DIR / filename
+        plt.savefig(output_path, dpi=300)
+        plt.close()
+        logger.info(f"Saved SHAP importance chart to: {output_path}")
+        return output_path
+
+
