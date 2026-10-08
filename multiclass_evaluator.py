@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import (
     accuracy_score,
+    balanced_accuracy_score,
     precision_recall_fscore_support,
     cohen_kappa_score,
     matthews_corrcoef,
@@ -29,6 +30,7 @@ class MulticlassEvaluator:
         y_pred = np.asarray(y_pred)
 
         acc = accuracy_score(y_true, y_pred)
+        bal_acc = balanced_accuracy_score(y_true, y_pred)
         prec_macro, rec_macro, f1_macro, _ = precision_recall_fscore_support(
             y_true, y_pred, average="macro", zero_division=0
         )
@@ -41,6 +43,7 @@ class MulticlassEvaluator:
 
         metrics = {
             "accuracy": round(float(acc), 4),
+            "balanced_accuracy": round(float(bal_acc), 4),
             "f1_macro": round(float(f1_macro), 4),
             "precision_macro": round(float(prec_macro), 4),
             "recall_macro": round(float(rec_macro), 4),
@@ -50,7 +53,7 @@ class MulticlassEvaluator:
             "confusion_matrix": cm.tolist(),
         }
 
-        logger.info(f"Multiclass Evaluation: Accuracy={acc:.4f}, F1-Macro={f1_macro:.4f}, MCC={mcc:.4f}")
+        logger.info(f"Multiclass Evaluation: Accuracy={acc:.4f}, Bal-Acc={bal_acc:.4f}, F1-Macro={f1_macro:.4f}")
         return metrics
 
     @staticmethod
