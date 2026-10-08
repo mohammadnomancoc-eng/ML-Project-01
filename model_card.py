@@ -104,3 +104,10 @@ class ModelCardGenerator:
   url = {{https://github.com/mohammadnomancoc-eng/ML-Project-01}}
 }}"""
 
+    @staticmethod
+    def export_html_summary(model_name: str, version: str, metrics: Dict[str, float]) -> str:
+        """Generates standalone self-contained HTML badge summary table."""
+        rows = "".join([f"<tr><td><b>{k.upper()}</b></td><td>{v}</td></tr>" for k, v in metrics.items()])
+        return f"""<div class="model-card"><h2>{model_name} (v{version})</h2><table>{rows}</table></div>"""
+
+
