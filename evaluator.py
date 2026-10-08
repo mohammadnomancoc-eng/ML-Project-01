@@ -65,3 +65,10 @@ class ModelEvaluator:
         """Constructs a leaderboard comparison table across all evaluated models."""
         df = pd.DataFrame.from_dict(evaluations, orient="index")
         return df.sort_values(by="r2_score", ascending=False)
+
+    @staticmethod
+    def get_formatted_leaderboard(evaluations: Dict[str, Dict[str, float]]) -> str:
+        """Formats the evaluation leaderboard into Markdown table."""
+        df = ModelEvaluator.compare_models(evaluations)
+        return df.to_markdown()
+
