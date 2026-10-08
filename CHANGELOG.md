@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.8.0] — 2026-10-08
+
+### Added
+- **Balanced Accuracy Metric**: `balanced_accuracy` tracking in `multiclass_evaluator.py`.
+- **Pipeline Latency Breakdown**: `get_stage_percentage_breakdown` in `pipeline_profiler.py`.
+- **Non-Negative Contract Rule**: `validate_non_negative_constraint` in `data_contract.py`.
+- **Streaming Model Weights Vector**: `get_model_weights_vector` in `streaming_learner.py`.
+- **Recursive Feature Rankings**: `get_selected_feature_rankings` in `feature_selector_v2.py`.
+- **HTML Model Card Table**: `export_html_summary` badge in `model_card.py`.
+- **Missingness Shock Simulator**: `inject_missingness_spikes` in `synthetic_generator.py`.
+- **Database Table Inspector**: `check_table_exists` in `database_connector.py`.
+- **Tuner Score Consolidated Summary**: `get_best_score_summary` in `hyperparameter_tuner.py`.
+- **Inference Confidence Intervals**: `predict_with_confidence_intervals` in `inference.py`.
+- **Total Duration Profiler**: `get_total_training_duration` in `model_trainer.py`.
+- **Cache Expiration Purge**: `purge_expired_keys` in `feature_cache.py`.
+- **Model Latency Comparative Benchmark**: `compare_model_latencies` in `benchmark.py`.
+- **Execution Time Logging Decorator**: `log_execution_time` in `logger.py`.
+- **Service Summary API Endpoint**: `/metrics/summary` route in `api.py`.
+- **Markdown Leaderboard Formatter**: `get_formatted_leaderboard` in `evaluator.py`.
+- **Preprocessor IQR Bounds Accessor**: `get_feature_bounds_dict` in `preprocessor.py`.
+- **Global SHAP Importance Plot**: `plot_shap_importance_bar` in `visualizer.py`.
+- **Extended Test Suite V8**: Unit tests for profiler, contract, cache, and tuner helpers.
+
+---
+
 ## [2.7.0] — 2026-10-06
 
 ### Added
