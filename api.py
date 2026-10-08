@@ -84,3 +84,14 @@ def get_metrics():
         "status": "online",
         "model_loaded": predictor is not None,
     }
+
+
+@app.get("/metrics/summary", tags=["Monitoring"])
+def get_metrics_summary():
+    return {
+        "service": "ML-Project-01",
+        "status": "online",
+        "model_ready": predictor is not None,
+        "api_version": "1.1.0",
+    }
+
