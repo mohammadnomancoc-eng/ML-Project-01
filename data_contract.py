@@ -76,3 +76,16 @@ class DataContract:
             "violations_count": len(violations),
             "violations": violations,
         }
+
+    @staticmethod
+    def validate_non_negative_constraint(df: pd.DataFrame, numeric_columns: List[str]) -> List[str]:
+        """Validates that specified numeric features contain no negative numbers."""
+        violations = []
+        for col in numeric_columns:
+            if col in df.columns:
+                series = df[col].dropna()
+                if (series < 0).any():
+                    neg_count = int((series < 0).sum())
+                    violations.append(f"Column '{col}' has {neg_count} negative values violating non-negativity constraint.")
+        return violations
+
