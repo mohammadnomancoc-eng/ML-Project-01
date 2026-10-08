@@ -49,3 +49,11 @@ class RecursiveFeatureSelector:
     def fit_transform(self, X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
         """Fits selector and returns transformed DataFrame."""
         return self.fit(X, y).transform(X)
+
+    def get_selected_feature_rankings(self, X: pd.DataFrame) -> Dict[str, int]:
+        """Returns feature ranking order dictionary (1 = highest priority)."""
+        if self.rfecv is None:
+            return {}
+        numeric_X = X.select_dtypes(include=[np.number])
+        return dict(zip(numeric_X.columns, map(int, self.rfecv.ranking_)))
+
