@@ -58,3 +58,12 @@ class FeatureStoreCache:
         now = time.time()
         active_keys = [k for k, v in self._cache.items() if v["expires_at"] > now]
         return len(active_keys)
+
+    def purge_expired_keys(self) -> int:
+        """Removes all expired entries from cache and returns count purged."""
+        now = time.time()
+        expired_keys = [k for k, v in self._cache.items() if v["expires_at"] <= now]
+        for k in expired_keys:
+            del self._cache[k]
+        return len(expired_keys)
+
