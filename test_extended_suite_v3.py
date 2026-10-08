@@ -106,9 +106,32 @@ class TestExtendedSuiteV3(unittest.TestCase):
         sim = TabularCopulaSynthesizer.get_correlation_similarity_score(df, df)
         self.assertEqual(sim, 1.0)
 
+    def test_v2_8_helpers(self):
+        from data_contract import DataContract
+        from feature_cache import FeatureStoreCache
+        from pipeline_profiler import PipelineProfiler
+
+        df = pd.DataFrame({"pos": [1.0, 2.0, 3.0], "neg": [1.0, -2.0, 3.0]})
+        viol = DataContract.validate_non_negative_constraint(df, ["pos"])
+        self.assertEqual(len(viol), 0)
+        viol_neg = DataContract.validate_non_negative_constraint(df, ["neg"])
+        self.assertEqual(len(viol_neg), 1)
+
+        cache = FeatureStoreCache(default_ttl_seconds=1)
+        cache.put("user_1", {"f1": 10}, ttl_seconds=-1)
+        purged = cache.purge_expired_keys()
+        self.assertEqual(purged, 1)
+
+        profiler = PipelineProfiler()
+        with profiler.track_stage("stage_a"):
+            pass
+        bd = profiler.get_stage_percentage_breakdown()
+        self.assertIn("stage_a", bd)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
 
 
