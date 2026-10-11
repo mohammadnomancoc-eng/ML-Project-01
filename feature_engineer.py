@@ -64,3 +64,8 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
 
         transformed_array = self.column_transformer_.transform(X)
         return pd.DataFrame(transformed_array, columns=self.feature_names_out_, index=X.index)
+
+    def get_transformed_feature_dimension(self) -> int:
+        """Returns the number of output columns produced after feature transformation."""
+        return len(self.feature_names_out_)
+
