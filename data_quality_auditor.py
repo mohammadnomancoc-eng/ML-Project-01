@@ -76,3 +76,9 @@ class DataQualityAuditor:
             "anomalies": anomalies,
             "columns": column_reports,
         }
+
+    @staticmethod
+    def detect_constant_columns(df: pd.DataFrame) -> List[str]:
+        """Returns list of column names that have only 1 unique value or zero variance."""
+        return [col for col in df.columns if df[col].nunique(dropna=True) <= 1]
+
