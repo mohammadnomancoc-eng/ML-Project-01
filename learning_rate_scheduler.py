@@ -56,6 +56,17 @@ class LRScheduler:
             curr_epoch = epoch - warmup_epochs
             return min_lr + 0.5 * (max_lr - min_lr) * (1 + math.cos(math.pi * curr_epoch / max(1, decay_epochs)))
 
+    @staticmethod
+    def linear_warmup_cosine_decay(
+        initial_lr: float, epoch: int, total_epochs: int, warmup_epochs: int = 5, min_lr: float = 1e-6
+    ) -> float:
+        """Linear warmup followed by standard cosine decay."""
+        if epoch < warmup_epochs:
+            return (epoch + 1) / max(1, warmup_epochs) * initial_lr
+        decay_steps = total_epochs - warmup_epochs
+        cur_step = epoch - warmup_epochs
+        return min_lr + 0.5 * (initial_lr - min_lr) * (1 + math.cos(math.pi * cur_step / max(1, decay_steps)))
+
     @classmethod
     def generate_schedule(cls, scheduler_type: str, initial_lr: float, total_epochs: int, **kwargs) -> List[float]:
         """Generate full learning rate trajectory list for the entire training cycle."""
@@ -73,9 +84,12 @@ class LRScheduler:
                 lr = cls.polynomial_decay(initial_lr, epoch, total_epochs, **kwargs)
             elif scheduler_type == "one_cycle":
                 lr = cls.one_cycle_lr(initial_lr, epoch, total_epochs, **kwargs)
+            elif scheduler_type == "linear_cosine":
+                lr = cls.linear_warmup_cosine_decay(initial_lr, epoch, total_epochs, **kwargs)
             else:
                 lr = initial_lr
             schedule.append(lr)
         return schedule
+
 
 
