@@ -53,3 +53,14 @@ class ResidualDiagnosticAnalyzer:
         std_res = (residuals - np.mean(residuals)) / (np.std(residuals) + 1e-8)
         outlier_indices = np.where(np.abs(std_res) > threshold_std)[0].tolist()
         return outlier_indices
+
+    @staticmethod
+    def compute_cooks_distance_approximation(residuals: np.ndarray, p_features: int = 1) -> np.ndarray:
+        """Approximates Cook's distance for regression residuals to assess influence."""
+        res = np.asarray(residuals)
+        n = len(res)
+        mse = np.mean(res ** 2) + 1e-8
+        leverage_approx = 1.0 / n
+        d = (res ** 2 / (p_features * mse)) * (leverage_approx / ((1.0 - leverage_approx) ** 2 + 1e-8))
+        return np.round(d, 6)
+
