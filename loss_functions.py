@@ -70,4 +70,10 @@ def relative_squared_error(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(numerator / (denominator + 1e-8))
 
 
+def log_hyperbolic_cosine_error(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+    """Computes element-wise Log-Hyperbolic-Cosine error vector between predictions and targets."""
+    diff = np.asarray(y_pred) - np.asarray(y_true)
+    return np.log(np.cosh(diff + 1e-12))
+
+
 
