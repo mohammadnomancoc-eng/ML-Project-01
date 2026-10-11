@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.9.0] — 2026-10-11
+
+### Added
+- **PII Pattern Registry**: `get_registered_patterns` in `data_sanitizer.py`.
+- **Constant Column Auditor**: `detect_constant_columns` in `data_quality_auditor.py`.
+- **Cook's Distance Diagnostics**: `compute_cooks_distance_approximation` in `residual_analyzer.py`.
+- **Adaptive Conformal Intervals**: `get_adaptive_interval_widths` in `conformal_predictor.py`.
+- **Early Stopping Best Epoch**: `best_epoch` tracking in `early_stopping.py`.
+- **Linear Warmup Cosine Decay**: `linear_warmup_cosine_decay` in `learning_rate_scheduler.py`.
+- **ROI Dollar Savings Calculation**: `compute_roi_savings` in `cost_analyzer.py`.
+- **Cloud Spot Recommendation**: `recommend_spot_instance` in `cloud_cost_optimizer.py`.
+- **Linear Rule Python Code Generation**: `export_to_python_code` in `model_rule_exporter.py`.
+- **Parquet Checkpoint Disk Inspector**: `get_checkpoint_size_bytes` in `pipeline_checkpoint.py`.
+- **Ensemble Shannon Entropy**: `compute_ensemble_entropy` in `uncertainty_estimator.py`.
+- **Jensen-Shannon Feature Divergence**: `compute_jensen_shannon_divergence` in `distribution_drift.py`.
+- **Slice Disparity Table Formatting**: `compute_slice_disparity_table` in `data_slice_miner.py`.
+- **System CPU & RAM Telemetry**: `get_cpu_memory_telemetry` in `system_health.py`.
+- **Multi-Platform Alert Filtering**: `filter_alerts_by_platform` in `drift_alerter.py`.
+- **Feature Cluster Distribution Counts**: `get_cluster_feature_counts` in `feature_clusterer.py`.
+- **Log Hyperbolic Cosine Error**: `log_hyperbolic_cosine_error` in `loss_functions.py`.
+- **Transformed Feature Output Dimension**: `get_transformed_feature_dimension` in `feature_engineer.py`.
+- **Extended Test Suite V9**: Full unit test coverage in `test_extended_suite_v3.py`.
+
+---
+
 ## [2.8.0] — 2026-10-08
 
 ### Added
