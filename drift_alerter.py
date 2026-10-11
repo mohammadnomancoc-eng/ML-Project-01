@@ -86,6 +86,7 @@ class DriftAlerter:
 
         record = {
             "timestamp": datetime.now().isoformat(),
+            "platform": self.platform,
             "title": title,
             "severity": severity,
             "details": details,
@@ -106,4 +107,8 @@ class DriftAlerter:
             sev = alert.get("severity", "WARNING").upper()
             counts[sev] = counts.get(sev, 0) + 1
         return counts
+
+    def filter_alerts_by_platform(self, platform_name: str) -> List[Dict[str, Any]]:
+        """Filters recorded alerts matching a specific destination platform."""
+        return [a for a in self.alert_history if a.get("platform", self.platform).lower() == platform_name.lower()]
 
