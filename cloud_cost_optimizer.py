@@ -65,3 +65,15 @@ class CloudCostOptimizer:
         costs["total_multiregion_usd"] = round(sum(costs.values()), 2)
         return costs
 
+    @classmethod
+    def recommend_spot_instance(cls, peak_qps_target: float, spot_discount: float = 0.65) -> Dict[str, Any]:
+        """Calculates cost-effective spot instance pricing alternative."""
+        rec = cls.recommend_instance(peak_qps_target)
+        spot_hourly = round(rec["hourly_cost_usd"] * (1.0 - spot_discount), 4)
+        spot_monthly = round(rec["estimated_monthly_cost_usd"] * (1.0 - spot_discount), 2)
+        rec["spot_hourly_cost_usd"] = spot_hourly
+        rec["spot_monthly_cost_usd"] = spot_monthly
+        rec["spot_discount_percent"] = round(spot_discount * 100, 1)
+        return rec
+
+
