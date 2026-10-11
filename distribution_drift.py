@@ -74,3 +74,18 @@ class DistributionDriftEstimator:
         psi_val = np.sum((curr_pct - ref_pct) * np.log(curr_pct / ref_pct))
         return round(float(psi_val), 4)
 
+    @staticmethod
+    def compute_jensen_shannon_divergence(
+        p: np.ndarray, q: np.ndarray, eps: float = 1e-12
+    ) -> float:
+        """Computes symmetric Jensen-Shannon divergence between two discrete probability distributions."""
+        p_arr = np.asarray(p, dtype=float) + eps
+        q_arr = np.asarray(q, dtype=float) + eps
+        p_arr = p_arr / np.sum(p_arr)
+        q_arr = q_arr / np.sum(q_arr)
+        m = 0.5 * (p_arr + q_arr)
+        kl_pm = np.sum(p_arr * np.log(p_arr / m))
+        kl_qm = np.sum(q_arr * np.log(q_arr / m))
+        js = 0.5 * (kl_pm + kl_qm)
+        return round(float(js), 4)
+
