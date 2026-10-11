@@ -59,3 +59,10 @@ class DataSliceMiner:
             raise KeyError(f"Feature '{feature}' not present in dataframe.")
         return df[df[feature].astype(str) == str(slice_value)].copy()
 
+    @staticmethod
+    def compute_slice_disparity_table(slices: List[Dict[str, Any]]) -> pd.DataFrame:
+        """Converts slice miner outputs into a formatted summary DataFrame."""
+        if not slices:
+            return pd.DataFrame(columns=["feature", "slice_value", "cohort_size", "slice_mae", "overall_mae", "error_disparity_ratio"])
+        return pd.DataFrame(slices)
+
