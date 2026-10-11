@@ -128,6 +128,86 @@ class TestExtendedSuiteV3(unittest.TestCase):
         bd = profiler.get_stage_percentage_breakdown()
         self.assertIn("stage_a", bd)
 
+    def test_v2_9_helpers(self):
+        from data_sanitizer import DataSanitizer
+        from data_quality_auditor import DataQualityAuditor
+        from residual_analyzer import ResidualDiagnosticAnalyzer
+        from conformal_predictor import ConformalPredictor
+        from early_stopping import EarlyStopping
+        from learning_rate_scheduler import LRScheduler
+        from cost_analyzer import BusinessCostAnalyzer
+        from cloud_cost_optimizer import CloudCostOptimizer
+        from model_rule_exporter import ModelRuleExporter
+        from uncertainty_estimator import EnsembleUncertaintyEstimator
+        from distribution_drift import DistributionDriftEstimator
+        from data_slice_miner import DataSliceMiner
+        from drift_alerter import DriftAlerter
+        from feature_clusterer import FeatureClusterer
+        from loss_functions import log_hyperbolic_cosine_error
+        from feature_engineer import FeatureEngineer
+
+        sanitizer = DataSanitizer()
+        patterns = sanitizer.get_registered_patterns()
+        self.assertIn("email", patterns)
+
+        df = pd.DataFrame({"const": [1, 1, 1], "var": [1, 2, 3]})
+        const_cols = DataQualityAuditor.detect_constant_columns(df)
+        self.assertEqual(const_cols, ["const"])
+
+        cd = ResidualDiagnosticAnalyzer.compute_cooks_distance_approximation(
+            np.array([1.0, 2.0]), np.array([0.1, 0.2])
+        )
+        self.assertEqual(len(cd), 2)
+
+        cp = ConformalPredictor()
+        cp.quantile_residual_ = 1.0
+        widths = cp.get_adaptive_interval_widths(np.array([1.0]))
+        self.assertAlmostEqual(widths[0], 2.0)
+
+        es = EarlyStopping(patience=2)
+        es.step(0.5)
+        es.step(0.4)
+        self.assertEqual(es.best_epoch, 2)
+
+        lr = LRScheduler.linear_warmup_cosine_decay(0.01, epoch=2, total_epochs=20, warmup_epochs=5)
+        self.assertGreater(lr, 0.0)
+
+        roi = BusinessCostAnalyzer.compute_roi_savings(10000.0, 2000.0)
+        self.assertEqual(roi["net_savings_usd"], 8000.0)
+
+        spot = CloudCostOptimizer.recommend_spot_instance(50.0)
+        self.assertIn("spot_monthly_cost_usd", spot)
+
+        py_code = ModelRuleExporter.export_to_python_code({"intercept": 1.0, "coefficients": {"x": 2.0}})
+        self.assertIn("def predict_linear", py_code)
+
+        ent = EnsembleUncertaintyEstimator.compute_ensemble_entropy(np.array([[0.5, 0.5]]))
+        self.assertGreater(ent[0], 0.0)
+
+        js = DistributionDriftEstimator.compute_jensen_shannon_divergence(np.array([1, 1]), np.array([1, 1]))
+        self.assertAlmostEqual(js, 0.0, places=2)
+
+        tbl = DataSliceMiner.compute_slice_disparity_table([])
+        self.assertIn("slice_mae", tbl.columns)
+
+        alerter = DriftAlerter(platform="slack")
+        alerter.send_alert("Test Alert", severity="INFO")
+        filtered = alerter.filter_alerts_by_platform("slack")
+        self.assertEqual(len(filtered), 1)
+
+        fc = FeatureClusterer()
+        fc.fit(df)
+        counts = fc.get_cluster_feature_counts()
+        self.assertGreater(len(counts), 0)
+
+        lch = log_hyperbolic_cosine_error(np.array([1.0]), np.array([1.0]))
+        self.assertAlmostEqual(lch[0], 0.0, places=2)
+
+        fe = FeatureEngineer()
+        fe.fit(df)
+        dim = fe.get_transformed_feature_dimension()
+        self.assertEqual(dim, 2)
+
 
 if __name__ == "__main__":
     unittest.main()
