@@ -83,4 +83,24 @@ class SystemHealthMonitor:
             "cwd": os.getcwd(),
         }
 
+    @staticmethod
+    def get_cpu_memory_telemetry() -> Dict[str, Any]:
+        """Gathers available CPU and virtual memory metrics."""
+        telemetry = {
+            "cpu_cores": os.cpu_count() or 1,
+            "pid": os.getpid(),
+        }
+        try:
+            import psutil
+            mem = psutil.virtual_memory()
+            telemetry.update({
+                "ram_total_gb": round(mem.total / (1024 ** 3), 2),
+                "ram_available_gb": round(mem.available / (1024 ** 3), 2),
+                "ram_percent_used": mem.percent,
+                "cpu_percent": psutil.cpu_percent(interval=None),
+            })
+        except ImportError:
+            telemetry["ram_telemetry"] = "psutil_not_installed"
+        return telemetry
+
 
