@@ -82,4 +82,16 @@ class BusinessCostAnalyzer:
             "projected_monthly_avg_usd": round(projected_annual / 12, 2),
         }
 
+    @staticmethod
+    def compute_roi_savings(manual_process_cost_usd: float, ml_process_cost_usd: float) -> Dict[str, float]:
+        """Calculates total net dollar savings and return-on-investment percentage."""
+        savings = manual_process_cost_usd - ml_process_cost_usd
+        roi_pct = (savings / max(1e-8, ml_process_cost_usd)) * 100.0
+        return {
+            "net_savings_usd": round(float(savings), 2),
+            "roi_percentage": round(float(roi_pct), 2),
+            "cost_reduction_ratio": round(float(ml_process_cost_usd / max(1e-8, manual_process_cost_usd)), 4),
+        }
+
+
 
