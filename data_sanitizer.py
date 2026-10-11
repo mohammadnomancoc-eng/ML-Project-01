@@ -75,3 +75,8 @@ class DataSanitizer:
         self.PATTERNS[name] = regex_pattern
         self.compiled_regex[name] = re.compile(regex_pattern)
         logger.info(f"Registered custom PII pattern: '{name}'")
+
+    def get_registered_patterns(self) -> List[str]:
+        """Returns list of currently active pattern names."""
+        return list(self.compiled_regex.keys())
+
