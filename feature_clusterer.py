@@ -89,3 +89,8 @@ class FeatureClusterer:
                 centroids[f"cluster_{cl_id}_centroid"] = df[valid_feats].mean(axis=1)
         return centroids
 
+    def get_cluster_feature_counts(self) -> Dict[int, int]:
+        """Returns mapping of cluster ID to the count of features assigned to that cluster."""
+        mapping = self.get_cluster_mapping()
+        return {cl_id: len(feats) for cl_id, feats in mapping.items()}
+
