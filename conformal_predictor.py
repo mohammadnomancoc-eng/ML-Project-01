@@ -89,3 +89,12 @@ class ConformalPredictor:
         width = 2 * self.quantile_residual_
         return round(float(width / target_std), 4)
 
+    def get_adaptive_interval_widths(self, y_pred: np.ndarray, variance_scale: Optional[np.ndarray] = None) -> np.ndarray:
+        """Computes sample-wise prediction interval widths scaled by local uncertainty."""
+        base_width = 2.0 * self.quantile_residual_
+        if variance_scale is None:
+            return np.full(len(y_pred), base_width)
+        scaled_widths = base_width * (1.0 + np.asarray(variance_scale))
+        return np.round(scaled_widths, 4)
+
+
