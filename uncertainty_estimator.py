@@ -44,3 +44,10 @@ class EnsembleUncertaintyEstimator:
             return pd.Series(0.0, index=std_series.index)
         return (std_series - s_min) / (s_max - s_min)
 
+    @staticmethod
+    def compute_ensemble_entropy(probabilities: np.ndarray, eps: float = 1e-12) -> np.ndarray:
+        """Computes Shannon entropy across predicted class probability distributions."""
+        probs = np.clip(probabilities, eps, 1.0)
+        entropy = -np.sum(probs * np.log(probs), axis=1)
+        return np.round(entropy, 4)
+
