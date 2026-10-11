@@ -60,3 +60,17 @@ class ModelRuleExporter:
                 })
         return nodes
 
+    @staticmethod
+    def export_to_python_code(exported_rules: Dict[str, Any]) -> str:
+        """Converts exported linear model dictionary into a standalone Python predict function."""
+        func_lines = [
+            "def predict_linear(features: dict) -> float:",
+            f"    intercept = {exported_rules.get('intercept', 0.0)}",
+            "    score = intercept",
+        ]
+        for feat, w in exported_rules.get("coefficients", {}).items():
+            func_lines.append(f"    score += {w} * features.get('{feat}', 0.0)")
+        func_lines.append("    return score\n")
+        return "\n".join(func_lines)
+
+
