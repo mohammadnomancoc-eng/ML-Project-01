@@ -26,6 +26,7 @@ class EarlyStopping:
         self.best_weights: Optional[dict] = None
         self.counter: int = 0
         self.current_epoch: int = 0
+        self.best_epoch: int = 0
         self.early_stop: bool = False
 
     def reset(self) -> None:
@@ -34,6 +35,7 @@ class EarlyStopping:
         self.best_weights = None
         self.counter = 0
         self.current_epoch = 0
+        self.best_epoch = 0
         self.early_stop = False
 
     def step(self, current_score: float, current_weights: Optional[dict] = None) -> bool:
@@ -42,6 +44,7 @@ class EarlyStopping:
 
         if self.best_score is None:
             self.best_score = current_score
+            self.best_epoch = self.current_epoch
             if current_weights is not None:
                 self.best_weights = current_weights.copy()
             return False
@@ -57,6 +60,7 @@ class EarlyStopping:
 
         if improved:
             self.best_score = current_score
+            self.best_epoch = self.current_epoch
             if current_weights is not None:
                 self.best_weights = current_weights.copy()
             self.counter = 0
@@ -77,12 +81,14 @@ class EarlyStopping:
         """Returns current early stopping state."""
         return {
             "best_score": self.best_score,
+            "best_epoch": self.best_epoch,
             "current_epoch": self.current_epoch,
             "counter": self.counter,
             "patience_remaining": self.patience_remaining,
             "early_stop_triggered": self.early_stop,
             "has_best_weights": self.best_weights is not None,
         }
+
 
     @property
     def patience_remaining(self) -> int:
