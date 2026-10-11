@@ -45,3 +45,10 @@ class PipelineCheckpointManager:
         logger.info(f"Cleared {count} stage checkpoint files from {self.checkpoint_dir}.")
         return count
 
+    def get_checkpoint_size_bytes(self, stage_name: str) -> Optional[int]:
+        """Returns the file size in bytes for a specific stage checkpoint, or None if not found."""
+        file_path = self.checkpoint_dir / f"checkpoint_{stage_name}.parquet"
+        if file_path.exists():
+            return file_path.stat().st_size
+        return None
+
