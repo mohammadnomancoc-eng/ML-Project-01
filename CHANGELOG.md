@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.10.0] – 2026-10-12
+
+### Added
+- **Streaming Model Intercept**: `get_model_intercept` in `streaming_learner.py`.
+- **Normalized RMSE Metric**: `normalized_root_mean_squared_error` in `loss_functions.py`.
+- **Checkpoint Stage Listing**: `list_available_checkpoints` in `pipeline_checkpoint.py`.
+- **Latest Alert Accessor**: `get_latest_alert` in `drift_alerter.py`.
+- **Active Log Filepath Resolver**: `get_current_log_filepath` in `logger.py`.
+- **Extended Test Suite V10**: Full unit test coverage in `test_extended_suite_v3.py`.
+
+---
+
 ## [2.9.0] — 2026-10-11
 
 ### Added
