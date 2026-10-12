@@ -75,5 +75,12 @@ def log_hyperbolic_cosine_error(y_true: np.ndarray, y_pred: np.ndarray) -> np.nd
     diff = np.asarray(y_pred) - np.asarray(y_true)
     return np.log(np.cosh(diff + 1e-12))
 
-
+def normalized_root_mean_squared_error(y_true: np.ndarray, y_pred: np.ndarray, normalization: str = "range") -> float:
+    """Computes Normalized Root Mean Squared Error (NRMSE) by target range or standard deviation."""
+    rmse = np.sqrt(np.mean((np.asarray(y_true) - np.asarray(y_pred)) ** 2))
+    if normalization == "std":
+        norm = np.std(y_true)
+    else:
+        norm = np.max(y_true) - np.min(y_true)
+    return float(rmse / (norm + 1e-8))
 
