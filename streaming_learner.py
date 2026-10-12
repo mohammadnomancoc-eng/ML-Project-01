@@ -74,3 +74,11 @@ class StreamingOnlineLearner:
             return self.model.coef_.copy()
         return None
 
+    def get_model_intercept(self) -> Optional[float]:
+        """Returns the current online linear regression intercept scalar, or None if not trained."""
+        if hasattr(self.model, "intercept_"):
+            if hasattr(self.model.intercept_, "__len__") and len(self.model.intercept_) > 0:
+                return float(self.model.intercept_[0])
+            return float(self.model.intercept_)
+        return None
+
