@@ -53,3 +53,9 @@ def log_execution_time(func):
         return res
 
     return wrapper
+
+def get_current_log_filepath() -> Path:
+    """Returns the Path to the current active daily log file."""
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    return paths.LOGS_DIR / f"run_{today_str}.log"
+
