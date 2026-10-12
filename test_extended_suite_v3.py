@@ -209,6 +209,47 @@ class TestExtendedSuiteV3(unittest.TestCase):
         self.assertEqual(dim, 2)
 
 
+
+    def test_v2_10_helpers(self):
+        from streaming_learner import StreamingOnlineLearner
+        from loss_functions import normalized_root_mean_squared_error
+        from pipeline_checkpoint import PipelineCheckpointManager
+        from drift_alerter import DriftAlerter
+        from logger import get_current_log_filepath
+
+        # 1. StreamingOnlineLearner get_model_intercept
+        learner = StreamingOnlineLearner()
+        self.assertIsNone(learner.get_model_intercept())
+        df = pd.DataFrame({"feat1": [1.0, 2.0, 3.0], "feat2": [2.0, 4.0, 6.0]})
+        y = pd.Series([2.0, 4.0, 6.0])
+        learner.partial_fit_batch(df, y)
+        self.assertIsNotNone(learner.get_model_intercept())
+
+        # 2. normalized_root_mean_squared_error
+        nrmse = normalized_root_mean_squared_error(np.array([1.0, 2.0]), np.array([1.0, 2.0]))
+        self.assertAlmostEqual(nrmse, 0.0, places=3)
+
+        # 3. PipelineCheckpointManager list_available_checkpoints
+        mgr = PipelineCheckpointManager()
+        dummy_file = mgr.checkpoint_dir / "checkpoint_temp_stage.parquet"
+        dummy_file.write_bytes(b"")
+        try:
+            self.assertIn("temp_stage", mgr.list_available_checkpoints())
+        finally:
+            if dummy_file.exists():
+                dummy_file.unlink()
+
+        # 4. DriftAlerter get_latest_alert
+        alerter = DriftAlerter(platform="slack")
+        self.assertIsNone(alerter.get_latest_alert())
+        alerter.send_alert("Test Alert", severity="INFO")
+        self.assertIsNotNone(alerter.get_latest_alert())
+
+        # 5. logger get_current_log_filepath
+        log_path = get_current_log_filepath()
+        self.assertTrue(str(log_path).endswith(".log"))
+
+
 if __name__ == "__main__":
     unittest.main()
 
