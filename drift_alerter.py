@@ -112,3 +112,7 @@ class DriftAlerter:
         """Filters recorded alerts matching a specific destination platform."""
         return [a for a in self.alert_history if a.get("platform", self.platform).lower() == platform_name.lower()]
 
+    def get_latest_alert(self) -> Optional[Dict[str, Any]]:
+        """Returns the most recently recorded alert record, or None if history is empty."""
+        return self.alert_history[-1] if self.alert_history else None
+
