@@ -101,3 +101,11 @@ class ConceptDriftDetector:
             "is_drifting": len(self.drift_detected_indices) > 0,
         }
 
+    def get_recent_window_mae(self, window_size: Optional[int] = None) -> float:
+        """Calculates mean absolute error across the most recent streaming error window."""
+        size = window_size if window_size is not None else self.window_size
+        if not self.error_history:
+            return 0.0
+        recent = self.error_history[-size:] if len(self.error_history) >= size else self.error_history
+        return round(float(np.mean(recent)), 4)
+
