@@ -59,3 +59,13 @@ class SampleWeigher:
         clipped = np.clip(weights, min_weight, max_weight)
         return clipped / (np.mean(clipped) + 1e-8)
 
+    @staticmethod
+    def combine_sample_weights(*weight_vectors: np.ndarray) -> np.ndarray:
+        """Combines multiple weight vectors multiplicatively and re-normalizes mean to 1.0."""
+        if not weight_vectors:
+            raise ValueError("At least one weight vector must be provided.")
+        combined = np.ones_like(weight_vectors[0], dtype=float)
+        for w in weight_vectors:
+            combined = combined * np.asarray(w, dtype=float)
+        return combined / (np.mean(combined) + 1e-8)
+
