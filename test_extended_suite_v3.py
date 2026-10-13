@@ -249,6 +249,33 @@ class TestExtendedSuiteV3(unittest.TestCase):
         log_path = get_current_log_filepath()
         self.assertTrue(str(log_path).endswith(".log"))
 
+    def test_v2_11_helpers(self):
+        from concept_drift_detector import ConceptDriftDetector
+        from multiclass_evaluator import MulticlassEvaluator
+        from sample_weigher import SampleWeigher
+
+        # 1. ConceptDriftDetector get_recent_window_mae
+        cdd = ConceptDriftDetector(window_size=5)
+        self.assertEqual(cdd.get_recent_window_mae(), 0.0)
+        cdd.update(1.0, 2.0)
+        cdd.update(2.0, 4.0)
+        self.assertAlmostEqual(cdd.get_recent_window_mae(), 1.5, places=3)
+        self.assertAlmostEqual(cdd.get_recent_window_mae(window_size=1), 2.0, places=3)
+
+        # 2. MulticlassEvaluator compute_per_class_accuracy
+        y_true = np.array(["A", "A", "B", "B"])
+        y_pred = np.array(["A", "B", "B", "B"])
+        per_class = MulticlassEvaluator.compute_per_class_accuracy(y_true, y_pred)
+        self.assertEqual(per_class["A"], 0.5)
+        self.assertEqual(per_class["B"], 1.0)
+
+        # 3. SampleWeigher combine_sample_weights
+        w1 = np.array([1.0, 2.0])
+        w2 = np.array([2.0, 1.0])
+        combined = SampleWeigher.combine_sample_weights(w1, w2)
+        self.assertEqual(len(combined), 2)
+        self.assertAlmostEqual(float(np.mean(combined)), 1.0, places=3)
+
 
 if __name__ == "__main__":
     unittest.main()
