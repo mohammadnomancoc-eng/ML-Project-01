@@ -68,3 +68,21 @@ class MulticlassEvaluator:
             rows.append(row_str)
 
         return "\n".join(rows)
+
+    @staticmethod
+    def compute_per_class_accuracy(
+        y_true: np.ndarray, y_pred: np.ndarray, class_labels: Optional[List[str]] = None
+    ) -> Dict[str, float]:
+        """Calculates recall/accuracy individually for each target class."""
+        y_true = np.asarray(y_true)
+        y_pred = np.asarray(y_pred)
+        unique_classes = np.unique(y_true) if class_labels is None else class_labels
+        per_class = {}
+        for c in unique_classes:
+            mask = y_true == c
+            if np.sum(mask) == 0:
+                acc = 0.0
+            else:
+                acc = float(np.mean(y_pred[mask] == c))
+            per_class[str(c)] = round(acc, 4)
+        return per_class
