@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.11.0] — 2026-10-13
+
+### Added
+- **Streaming Window MAE Accessor**: `get_recent_window_mae` in `concept_drift_detector.py`.
+- **Per-Class Classification Accuracy**: `compute_per_class_accuracy` in `multiclass_evaluator.py`.
+- **Multi-Vector Sample Weight Combination**: `combine_sample_weights` in `sample_weigher.py`.
+- **Extended Test Suite V11**: Unit test coverage for v2.11 helpers in `test_extended_suite_v3.py`.
+
+---
+
 ## [2.10.0] – 2026-10-12
 
 ### Added
